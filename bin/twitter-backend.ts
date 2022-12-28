@@ -1,21 +1,23 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { TwitterBackendStack } from '../lib/twitter-backend-stack';
+
+import { CognitoUserPoolStack } from '../lib/cognito-userpool-stack'
+//import { CognitoIdentityPoolStack } from '../lib/cognito-identitypool-stack'
+//import { DynamoDbTableStack } from '../lib/dynamodb-table-stack'
+import { AppsyncApiStack } from '../lib/appsync-api-stack'
+
+import Config from '../config.json';
 
 const app = new cdk.App();
-new TwitterBackendStack(app, 'TwitterBackendStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+const userPoolStack = new CognitoUserPoolStack(app, 'CognitoUserPoolStack', {
+  appName: Config.appName,
+  stage: Config.stage,
+})
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
-
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
-});
+const graphqlApiStack = new AppsyncApiStack(app, 'AppsyncApiStack', {
+  appName: Config.appName,
+  stage: Config.stage,
+  userPool: userPoolStack.userPool,
+})
