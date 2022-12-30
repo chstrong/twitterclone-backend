@@ -1,6 +1,6 @@
 # Welcome to the Twitter Clone Backend
 
-This is a Typescript CDK Backend version of the Twitter Clone that is built with Serverless Framework based on Yan's School (The Burning Monk).
+This is a Typescript CDK Backend version of the Twitter Clone that is built with the Serverless Framework in Yan's School (The Burning Monk).
 
 https://school.theburningmonk.com/courses/appsync-masterclass-premium
 
@@ -14,7 +14,9 @@ Following are the AWS services used for this backend stack:
 
 ## How to build
 
-### NPM dependencies
+### Required NPM libraries
+
+#### Required CDK Alpha libraries
 
 The backend is using some of the CDK's alpha status libraries for some newer features:
 
@@ -26,6 +28,40 @@ npm i @aws-cdk/aws-cognito-identitypool-alpha
 If you encounter version conflicts during installation, make sure that aws-cdk and aws-cdk-lib in package.json are set to the same version as the alpha packages you install. You will see the version in the error message.
 
 Once you've changed the version to whatever version the alpha packages are pointing to type "npm install". Then try install the packages again.
+
+#### AWS SDK
+
+We need to install the AWS SDK for a Cognito Lambda Trigger function, that will write the user information into the DynamoDB user table.
+
+```
+npm i aws-sdk
+npm i @types/aws-lambda --save-dev
+```
+
+#### ESBuild
+
+NodejsFunction requires esbuild. So we will need to install it.
+
+```
+npm i esbuild --save-dev
+```
+
+#### Chance
+
+This helps with generation of data.
+
+```
+npm i chance --save-dev
+npm i @types/chance --save-dev
+```
+
+#### dotenv
+
+
+
+```
+npm i dotenv --save-dev
+```
 
 ### config.json
 

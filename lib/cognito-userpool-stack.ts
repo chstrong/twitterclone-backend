@@ -5,12 +5,14 @@ import {
 	UserPoolClient,
 	VerificationEmailStyle,
 } from 'aws-cdk-lib/aws-cognito'
+import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 
 import { Construct } from 'constructs'
 
 interface CognitoUserPoolStackProps extends StackProps {
 	appName: String,
 	stage: String,
+	confirmUserSignupHandler: NodejsFunction,
 }
 
 export class CognitoUserPoolStack extends Stack {
@@ -43,6 +45,9 @@ export class CognitoUserPoolStack extends Stack {
 					required: false,
 					mutable: true,
 				}
+			},
+			lambdaTriggers: {
+				postConfirmation: props.confirmUserSignupHandler,
 			},
 			removalPolicy: RemovalPolicy.DESTROY,
 		})
