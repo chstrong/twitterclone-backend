@@ -9,7 +9,8 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "integration-test": "jest --verbose ./test/integration"
+    "integration-test": "jest --verbose ./test/integration",
+    "e2e-test": "jest --verbose ./test/e2e"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.109",
