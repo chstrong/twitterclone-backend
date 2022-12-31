@@ -1,12 +1,15 @@
 require('dotenv').config()
+const ENV = require("../../../cdk-env.json")
 const AWS = require('aws-sdk')
 
 const user_exists_in_UserTable = async (id: String) => {
     const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
-    console.log(`looking for user ${id} in table ${process.env.USER_TABLE}`)
+    const userTable = ENV.DynamoDbTableStack.UserTableName
+
+    console.log(`looking for user ${id} in table ${userTable}`)
     const resp = await DynamoDB.get({
-        TableName: process.env.USER_TABLE,
+        TableName: userTable,
         Key: {
             id
         }

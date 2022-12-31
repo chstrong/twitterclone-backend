@@ -9,8 +9,11 @@ import { CognitoUserPoolStack } from '../lib/cognito-userpool-stack'
 import { AppsyncApiStack } from '../lib/appsync-api-stack'
 
 import Config from '../config.json';
+import { GlobalConfigStack } from '../lib/global-config-stack';
 
 const app = new cdk.App();
+
+const globalConfigStack = new GlobalConfigStack(app, 'GlobalConfigStack', {})
 
 const dynamodbTableStack = new DynamoDbTableStack(app, 'DynamoDbTableStack', {
   appName: Config.appName,

@@ -9,6 +9,7 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
+    "deploy": "cdk deploy --all --outputs-file=cdk-env.json",
     "integration-test": "jest --verbose ./test/integration",
     "e2e-test": "jest --verbose ./test/e2e"
   },

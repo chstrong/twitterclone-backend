@@ -1,14 +1,20 @@
 require('dotenv').config()
+const ENV = require("../../../cdk-env.json")
 const AWS = require('aws-sdk')
 
+const awsRegion = ENV.GlobalConfigStack.AWSRegion
+const userPoolId = ENV.CognitoUserPoolStack.UserPoolId
+const userPoolClientId = ENV.CognitoUserPoolStack.UserPoolClientId
+
 const we_invoke_confirmUserSignup = async (email: String, name: String) => {
+
     const handler = require('../../../lib/lambda/cognito/confirm-user-signup.ts').handler
 
     const context = {}
     const event = {
         "version": "1",
-        "region": process.env.AWS_REGION,
-        "userPoolId": process.env.COGNITO_USER_POOL_ID,
+        "region": awsRegion,
+        "userPoolId": userPoolId,
         "userName": email,
         "triggerSource": "PostConfirmation_ConfirmSignUp",
         "request": {
@@ -30,11 +36,8 @@ const we_invoke_confirmUserSignup = async (email: String, name: String) => {
 const a_user_signs_up = async (name: String, email: String, password: String) => {
     const cognito = new AWS.CognitoIdentityServiceProvider()
 
-    const userPoolId = process.env.COGNITO_USER_POOL_ID
-    // const clientId = ...
-
     const signUpResp = await cognito.signUp({
-        ClientId: process.env.COGNITO_USER_POOL_CLIENT_ID,
+        ClientId: userPoolClientId,
         Username: email,
         Password: password,
         UserAttributes: [

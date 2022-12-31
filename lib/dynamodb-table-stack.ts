@@ -1,4 +1,4 @@
-import { RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib'
+import { CfnOutput, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib'
 import { AttributeType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb'
 import { Construct } from 'constructs'
 
@@ -26,5 +26,9 @@ export class DynamoDbTableStack extends Stack {
         Tags.of(userTable).add('Application', `${props.appName}`)
 
 		this.userTable = userTable
+
+        new CfnOutput(this, 'UserTableName', {
+			value: userTable.tableName,
+		})
 	}
 }

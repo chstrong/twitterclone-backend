@@ -10,3 +10,4 @@ cdk.out
 # Other
 .env
 outputs.json
+cdk-env.json
