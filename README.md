@@ -55,9 +55,7 @@ npm i chance --save-dev
 npm i @types/chance --save-dev
 ```
 
-#### dotenv
-
-
+#### dotenv (might not...)
 
 ```
 npm i dotenv --save-dev
@@ -74,6 +72,22 @@ In order to import JSON files such as in our case the config.json file, followin
     "esModuleInterop": true,
     "resolveJsonModule": true,
   },
+```
+
+### cdk-env.json
+
+In order to to be able and use the latest configuration from CDK when we deploy our application we can use --outputs-file=cdk-env.json.
+
+This will create a file with all the CnfOutputs that we can use, especially in our test scripts.
+
+```
+cdk deploy --all --outputs-file=cdk-env.json
+```
+
+We want to ensure that this file, as it contains sensitive data is not checked into Git.
+
+```
+npm install -g envfile
 ```
 
 ## CDK
