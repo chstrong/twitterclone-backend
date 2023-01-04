@@ -55,11 +55,16 @@ npm i chance --save-dev
 npm i @types/chance --save-dev
 ```
 
-#### dotenv (might not...)
+#### Amplify Appsync Simulator
+
+This is required to test the VTL templates
 
 ```
-npm i dotenv --save-dev
+npm i amplify-appsync-simulator --save-dev
+npm i amplify-velocity-template --save-dev
 ```
+
+
 
 ### config.json
 
@@ -86,9 +91,9 @@ cdk deploy --all --outputs-file=cdk-env.json
 
 We want to ensure that this file, as it contains sensitive data is not checked into Git.
 
-```
-npm install -g envfile
-```
+## Signup a user through AWS CLI
+
+aws cognito-idp --region us-east-1 sign-up --client-id 3nj6jd3nt6id1iu6evq4ib8eob --username test@test.com --password 123456 --user-attributes Name=name,Value=Testuser
 
 ## CDK
 

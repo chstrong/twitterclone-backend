@@ -2,6 +2,10 @@ require('dotenv').config()
 const ENV = require("../../../cdk-env.json")
 const AWS = require('aws-sdk')
 
+const fs = require('fs')
+const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper')
+const velocityTemplate = require('amplify-velocity-template')
+
 const awsRegion = ENV.GlobalConfigStack.AWSRegion
 const userPoolId = ENV.CognitoUserPoolStack.UserPoolId
 const userPoolClientId = ENV.CognitoUserPoolStack.UserPoolClientId
@@ -62,9 +66,20 @@ const a_user_signs_up = async (name: String, email: String, password: String) =>
     }
 }
 
-module.exports = {
-    we_invoke_confirmUserSignup,
-    a_user_signs_up
+const we_invoke_an_appsync_template = (templatePath:any, context:any) => {
+    const template = fs.readFileSync(templatePath, 'utf8')
+    const ast = velocityTemplate.parse(template)
+    const compiler = new velocityTemplate.Compile(ast, {
+        valueMapper: velocityMapper.map,
+        escape: false
+    })
+    return JSON.parse(compiler.render(context))
 }
 
-export {}
+module.exports = {
+    we_invoke_confirmUserSignup,
+    a_user_signs_up,
+    we_invoke_an_appsync_template
+}
+
+export { }

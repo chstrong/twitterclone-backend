@@ -26,7 +26,7 @@ export class CognitoUserPoolStack extends Stack {
 			userPoolName: `${props.appName.toLowerCase()}-userpool-${props.stage.toLowerCase()} `,
 			selfSignUpEnabled: true,
 			accountRecovery: AccountRecovery.EMAIL_ONLY,
-			signInAliases: { email: true }, // I want email only as username
+			signInAliases: { email: true },
 			userVerification: { emailStyle: VerificationEmailStyle.CODE },
 			autoVerify: { email: true },
 			passwordPolicy: { // change this for production!!!

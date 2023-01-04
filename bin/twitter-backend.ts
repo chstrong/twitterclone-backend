@@ -10,6 +10,7 @@ import { AppsyncApiStack } from '../lib/appsync-api-stack'
 
 import Config from '../config.json';
 import { GlobalConfigStack } from '../lib/global-config-stack';
+import { AppsyncQueryStack } from '../lib/appsync-query-stack';
 
 const app = new cdk.App();
 
@@ -36,4 +37,11 @@ const graphqlApiStack = new AppsyncApiStack(app, 'AppsyncApiStack', {
   appName: Config.appName,
   stage: Config.stage,
   userPool: userPoolStack.userPool,
+})
+
+const graphqlQueryStack = new AppsyncQueryStack(app, 'AppsyncQueryStack', {
+  appName: Config.appName,
+  stage: Config.stage,
+  api: graphqlApiStack.api,
+  userTable: dynamodbTableStack.userTable
 })
