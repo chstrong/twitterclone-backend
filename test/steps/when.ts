@@ -1,10 +1,11 @@
 require('dotenv').config()
-const ENV = require("../../../cdk-env.json")
+const ENV = require("../../cdk-env.json")
 const AWS = require('aws-sdk')
 
 const fs = require('fs')
 const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper')
 const velocityTemplate = require('amplify-velocity-template')
+const { GraphQL } = require('../lib/graphql')
 
 const awsRegion = ENV.GlobalConfigStack.AWSRegion
 const userPoolId = ENV.CognitoUserPoolStack.UserPoolId
@@ -50,14 +51,14 @@ const a_user_signs_up = async (name: String, email: String, password: String) =>
     }).promise()
 
     const username = signUpResp.UserSub
-    console.log(`[${email}] - user has signed up [${name}]`)
+    console.log(`[${email}] - user has signed up [${username}]`)
 
     await cognito.adminConfirmSignUp({
         UserPoolId: userPoolId,
         Username: username,
     }).promise()
 
-    console.log(`${email} - confirmed sign up`)
+    console.log(`${username} - confirmed sign up`)
 
     return {
         username,
@@ -66,7 +67,7 @@ const a_user_signs_up = async (name: String, email: String, password: String) =>
     }
 }
 
-const we_invoke_an_appsync_template = (templatePath:any, context:any) => {
+const we_invoke_an_appsync_template = (templatePath: any, context: any) => {
     const template = fs.readFileSync(templatePath, 'utf8')
     const ast = velocityTemplate.parse(template)
     const compiler = new velocityTemplate.Compile(ast, {
@@ -76,10 +77,40 @@ const we_invoke_an_appsync_template = (templatePath:any, context:any) => {
     return JSON.parse(compiler.render(context))
 }
 
+const a_user_calls_getMyProfile = async (user: any) => {
+    const getMyProfile = `query getMyProfile {
+      getMyProfile {
+        backgroundImageUrl
+        bio
+        birthdate
+        createdAt
+        followersCount
+        followingCount
+        id
+        email
+        imageUrl
+        likesCount
+        location
+        name
+        screenName
+        tweetsCount
+        website
+      }
+    }`
+
+    const data = await GraphQL(ENV.AppsyncApiStack.GraphQLAPIURL, getMyProfile, {}, user.accessToken)
+    const profile = data.getMyProfile
+
+    console.log(`[${user.username}] - fetched the profile for [${user.email}]`)
+
+    return profile
+}
+
 module.exports = {
     we_invoke_confirmUserSignup,
     a_user_signs_up,
-    we_invoke_an_appsync_template
+    we_invoke_an_appsync_template,
+    a_user_calls_getMyProfile
 }
 
 export { }

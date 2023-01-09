@@ -10,6 +10,7 @@ const generateRandomString = function () {
 
 interface User {
     id: String,
+    email: String,
     name: String,
     screenName: String,
     createdAt: String,
@@ -29,10 +30,12 @@ async function create(event: any) {
     const name: string = event.request.userAttributes['name']
     const suffix: string = generateRandomString()
     const screenName: string = `${name.replace(/[^a-zA-Z0-9]/g, "")}${suffix}`
-    const username: string = event.request.userAttributes['email']
+    const username: string = event.userName
+    const email: string = event.request.userAttributes['email']
 
     const user: User = {
         id: username,
+        email: email,
         name: name,
         screenName: screenName,
         createdAt: new Date().toJSON(),

@@ -64,7 +64,19 @@ npm i amplify-appsync-simulator --save-dev
 npm i amplify-velocity-template --save-dev
 ```
 
+#### Axios
 
+This is required to connect to GraphQL
+
+```
+npm i axios --save-dev
+```
+
+#### Lodash
+
+```
+npm i lodash --save-dev
+```
 
 ### config.json
 

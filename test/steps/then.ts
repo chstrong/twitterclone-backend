@@ -1,5 +1,5 @@
 require('dotenv').config()
-const ENV = require("../../../cdk-env.json")
+const ENV = require("../../cdk-env.json")
 const AWS = require('aws-sdk')
 
 const user_exists_in_UserTable = async (id: String) => {

@@ -23,7 +23,8 @@
       "./node_modules/@types"
     ],
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
   },
   "exclude": [
     "node_modules",

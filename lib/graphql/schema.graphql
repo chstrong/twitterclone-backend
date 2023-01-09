@@ -53,6 +53,7 @@ input ProfileInput {
 
 interface IProfile {
     id: ID!
+    email: String!
     name: String!
     screenName: String!
     imageUrl: AWSURL
@@ -71,6 +72,7 @@ interface IProfile {
 
 type MyProfile implements IProfile {
     id: ID!
+    email: String!
     name: String!
     screenName: String!
     imageUrl: AWSURL
@@ -89,6 +91,7 @@ type MyProfile implements IProfile {
 
 type OtherProfile implements IProfile {
     id: ID!
+    email: String!
     name: String!
     screenName: String!
     imageUrl: AWSURL
