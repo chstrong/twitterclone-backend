@@ -10,7 +10,7 @@ import { AppsyncApiStack } from '../lib/appsync-api-stack'
 
 import Config from '../config.json';
 import { GlobalConfigStack } from '../lib/global-config-stack';
-import { AppsyncQueryStack } from '../lib/appsync-query-stack';
+import { AppsyncProfileResolverStack } from '../lib/appsync-profile-resolver-stack';
 
 const app = new cdk.App();
 
@@ -33,15 +33,15 @@ const userPoolStack = new CognitoUserPoolStack(app, 'CognitoUserPoolStack', {
   confirmUserSignupHandler: cognitoLambdaTriggerStack.confirmUserSignupHandler,
 })
 
-const graphqlApiStack = new AppsyncApiStack(app, 'AppsyncApiStack', {
+const appSyncApiStack = new AppsyncApiStack(app, 'AppsyncApiStack', {
   appName: Config.appName,
   stage: Config.stage,
   userPool: userPoolStack.userPool,
 })
 
-const graphqlQueryStack = new AppsyncQueryStack(app, 'AppsyncQueryStack', {
+const appSyncProfileResolverStack = new AppsyncProfileResolverStack(app, 'AppsyncProfileResolverStack', {
   appName: Config.appName,
   stage: Config.stage,
-  api: graphqlApiStack.api,
+  api: appSyncApiStack.api,
   userTable: dynamodbTableStack.userTable
 })
