@@ -19,7 +19,7 @@ const an_appsync_context = (identity: any, args: any) => {
     const util = velocityUtil.create([], new Date(), Object())
     const context = {
         identity: identity,
-        args,
+        args: args,
         arguments: args,
     }
     return {

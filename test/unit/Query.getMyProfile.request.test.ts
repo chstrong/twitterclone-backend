@@ -1,23 +1,22 @@
 // https://dev.to/aws-builders/strategies-to-test-aws-appsync-vtl-templates-1ede
 
-const given = require('../lib/steps/given')
-const when = require('../lib/steps/when')
+const given = require('../steps/given')
+const when = require('../steps/when')
 const path = require('path')
+const chance = require('chance').Chance()
 
 describe('Query.getMyProfile.request template', () => {
-  it("Should use email as 'id'", () => {
+  it("Should use username as 'id'", () => {
 
     // Construct the template path
     const templatePath: String = path.resolve(__dirname, '../../lib/graphql/mapping-templates/Query.getMyProfile.request.vtl')
 
     // Define an email address
-    const email: string = "test@test.com"
+    const username: string = chance.guid()
 
     // Create the identity parameters. In our case want to use the email as the id
     const identityParams = {
-      claims: {
-        email: email
-      }
+      username: username
     }
 
     // Create the arguments parameters. We don't use any here.
@@ -35,7 +34,7 @@ describe('Query.getMyProfile.request template', () => {
       "operation": "GetItem",
       "key": {
         "id": {
-          "S": email
+          "S": username
         }
       }
     })
