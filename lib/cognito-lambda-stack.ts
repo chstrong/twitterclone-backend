@@ -5,16 +5,16 @@ import { Runtime } from "aws-cdk-lib/aws-lambda";
 import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from 'path';
 
-interface CognitoLambdaTriggerStackProps extends StackProps {
+interface CognitoLambdaStackProps extends StackProps {
     appName: String,
     stage: String,
 	userTable: Table,
 }
 
-export class CognitoLambdaTriggerStack extends Stack {
+export class CognitoLambdaStack extends Stack {
     public readonly confirmUserSignupHandler: NodejsFunction
 
-	constructor(scope: Construct, id: string, props: CognitoLambdaTriggerStackProps) {
+	constructor(scope: Construct, id: string, props: CognitoLambdaStackProps) {
 		super(scope, id, props)
 
 		const confirmUserSignupHandler = new NodejsFunction(this, "ConfirmUserSignupHandler", {
@@ -28,8 +28,8 @@ export class CognitoLambdaTriggerStack extends Stack {
             },
         });
 
-        props.userTable.grantWriteData(confirmUserSignupHandler)
+        props.userTable.grantWriteData(confirmUserSignupHandler);
 
-        this.confirmUserSignupHandler = confirmUserSignupHandler
+        this.confirmUserSignupHandler = confirmUserSignupHandler;
 	}
 }

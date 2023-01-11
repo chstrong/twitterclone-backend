@@ -6,12 +6,14 @@ import {
     MappingTemplate,
 } from '@aws-cdk/aws-appsync-alpha'
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
 interface AppsyncProfileResolverStackProps extends StackProps {
     appName: String,
     stage: String,
     api: GraphqlApi,
     userTable: Table,
+    profileGetImageUploadUrlHandler: NodejsFunction
 }
 
 export class AppsyncProfileResolverStack extends Stack {
@@ -19,6 +21,8 @@ export class AppsyncProfileResolverStack extends Stack {
         super(scope, id, props);
 
         const UserTableDs = props.api.addDynamoDbDataSource('UserTableDs', props.userTable);
+        const ProfileGetImageUploadUrlDs = props.api.addLambdaDataSource('ProfileGetImageUploadUrlDs', props.profileGetImageUploadUrlHandler);
+
 
         // Get My Profile
         UserTableDs.createResolver('GetMyProfile', {
@@ -42,6 +46,11 @@ export class AppsyncProfileResolverStack extends Stack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, 'graphql/mapping-templates/Mutation.editMyProfile.response.vtl')
             ),
+        });
+
+        ProfileGetImageUploadUrlDs.createResolver('ProfileGetImageUploadUrl', {
+            typeName: 'Query',
+            fieldName: 'getImageUploadUrl',
         });
     }
 }

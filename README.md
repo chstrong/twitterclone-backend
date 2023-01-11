@@ -78,6 +78,12 @@ npm i axios --save-dev
 npm i lodash --save-dev
 ```
 
+#### ULID
+
+```
+npm i ulid --save-dev
+```
+
 ### config.json
 
 In order to import JSON files such as in our case the config.json file, following parameters have to be added to tsconfig.json:

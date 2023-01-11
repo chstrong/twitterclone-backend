@@ -13,7 +13,7 @@ const userPoolClientId = ENV.CognitoUserPoolStack.UserPoolClientId
 
 const we_invoke_confirmUserSignup = async (email: String, name: String) => {
 
-    const handler = require('../../../lib/lambda/cognito/confirm-user-signup.ts').handler
+    const handler = require('../../lib/lambda/cognito/confirm-user-signup.ts').handler
 
     const context = {}
     const event = {
