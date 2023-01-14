@@ -3,9 +3,9 @@ const S3 = require('aws-sdk/clients/s3')
 const s3 = new S3({ useAccelerateEndpoint: true })
 const ulid = require('ulid')
 
-const bucketName:string = process.env.BUCKET_NAME!
+const bucketName:string = process.env.TRANSFER_BUCKET!
 
-export const handler: Handler = async (event) => {
+export const handler: Handler = async (event:any) => {
     console.log(event);
 
     return await create(event);

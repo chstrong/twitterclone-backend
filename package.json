@@ -9,8 +9,9 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy --all --outputs-file=cdk-env.json",
+    "deploy": "cdk deploy --all --outputs-file=cdk-env.json && npm run build-env",
     "destroy": "cdk destroy --all",
+    "build-env": "node ./cdkenv2dotenv.js",
     "integration-test": "jest --verbose ./test/integration",
     "e2e-test": "jest --verbose ./test/e2e",
     "unit-test": "jest --verbose ./test/unit"

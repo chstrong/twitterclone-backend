@@ -113,6 +113,14 @@ We want to ensure that this file, as it contains sensitive data is not checked i
 
 aws cognito-idp --region us-east-1 sign-up --client-id 3nj6jd3nt6id1iu6evq4ib8eob --username test@test.com --password 123456 --user-attributes Name=name,Value=Testuser
 
+## Testing
+
+Running a single test file.
+
+```
+npx jest Foo.test.js
+```
+
 ## CDK
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.

@@ -28,6 +28,7 @@ export class AppsyncLambdaStack extends Stack {
             handler: "handler",
             environment: {
                 USER_TABLE: props.userTable.tableName,
+                TRANSFER_BUCKET: props.transferAssetsBucket.bucketName
             },
         });
 
