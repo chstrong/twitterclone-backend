@@ -1,7 +1,7 @@
 // https://dev.to/aws-builders/strategies-to-test-aws-appsync-vtl-templates-1ede
 
-const given = require('../steps/given')
-const when = require('../steps/when')
+const given = require('../../steps/given')
+const when = require('../../steps/when')
 const path = require('path')
 const chance = require('chance').Chance()
 
@@ -9,7 +9,7 @@ describe('Query.getMyProfile.request template', () => {
   it("Should use username as 'id'", () => {
 
     // Construct the template path
-    const templatePath: String = path.resolve(__dirname, '../../lib/graphql/mapping-templates/Query.getMyProfile.request.vtl')
+    const templatePath: String = path.resolve(__dirname, '../../../lib/graphql/mapping-templates/Query.getMyProfile.request.vtl')
 
     // Define an email address
     const username: string = chance.guid()

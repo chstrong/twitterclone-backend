@@ -6,8 +6,8 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import * as path from 'path';
 
 interface CognitoLambdaStackProps extends StackProps {
-    appName: String,
-    stage: String,
+    appName:string,
+    stage:string,
 	userTable: Table,
 }
 

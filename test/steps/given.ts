@@ -1,7 +1,10 @@
-const ENV = require("../../cdk-env.json")
+require('dotenv').config()
 const AWS = require('aws-sdk')
 const chance = require('chance').Chance()
 const velocityUtil = require('amplify-appsync-simulator/lib/velocity/util')
+
+const userPoolId = process.env.COGNITO_USERPOOL_ID
+const userPoolClientId = process.env.COGNITO_USERPOOL_CLIENT_ID
 
 const a_random_user = () => {
     const firstName = chance.first({ nationality: 'en' })
@@ -35,11 +38,8 @@ const an_authenticated_user = async () => {
 
     const cognito = new AWS.CognitoIdentityServiceProvider()
 
-    const userPoolId = ENV.CognitoUserPoolStack.UserPoolId
-    const clientId = ENV.CognitoUserPoolStack.UserPoolClientId
-
     const signUpResp = await cognito.signUp({
-        ClientId: clientId,
+        ClientId: userPoolClientId,
         Username: email,
         Password: password,
         UserAttributes: [
@@ -59,7 +59,7 @@ const an_authenticated_user = async () => {
 
     const auth = await cognito.initiateAuth({
         AuthFlow: 'USER_PASSWORD_AUTH',
-        ClientId: clientId,
+        ClientId: userPoolClientId,
         AuthParameters: {
             USERNAME: username,
             PASSWORD: password

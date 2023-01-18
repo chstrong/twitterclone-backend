@@ -1,5 +1,4 @@
 require('dotenv').config()
-const ENV = require("../../cdk-env.json")
 const AWS = require('aws-sdk')
 
 const fs = require('fs')
@@ -7,9 +6,10 @@ const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-map
 const velocityTemplate = require('amplify-velocity-template')
 const { GraphQL } = require('../lib/graphql')
 
-const awsRegion = ENV.GlobalConfigStack.AWSRegion
-const userPoolId = ENV.CognitoUserPoolStack.UserPoolId
-const userPoolClientId = ENV.CognitoUserPoolStack.UserPoolClientId
+const awsRegion = process.env.AWS_REGION
+const userPoolId = process.env.COGNITO_USERPOOL_ID
+const userPoolClientId = process.env.COGNITO_USERPOOL_CLIENT_ID
+const appsyncApiUrl = process.env.GRAPHQL_API_URL
 
 const we_invoke_confirmUserSignup = async (email: String, name: String) => {
 
@@ -98,7 +98,7 @@ const a_user_calls_getMyProfile = async (user: any) => {
       }
     }`
 
-    const data = await GraphQL(ENV.AppsyncApiStack.GraphQLAPIURL, getMyProfile, {}, user.accessToken)
+    const data = await GraphQL(appsyncApiUrl, getMyProfile, {}, user.accessToken)
     const profile = data.getMyProfile
 
     console.log(`[${user.username}] - fetched the profile for [${user.email}]`)
@@ -106,29 +106,81 @@ const a_user_calls_getMyProfile = async (user: any) => {
     return profile
 }
 
-const we_invoke_getImageUploadUrl = async (username:any, extension:any, contentType:any) => {
+const a_user_calls_editMyProfile = async (user: any, input: any) => {
+    const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
+        editMyProfile(newProfile: $input) {
+          backgroundImageUrl
+          bio
+          birthdate
+          createdAt
+          followersCount
+          followingCount
+          id
+          email
+          imageUrl
+          likesCount
+          location
+          name
+          screenName
+          tweetsCount
+          website
+        }
+      }`
+
+    const variables = {
+        input
+    }
+
+    const data = await GraphQL(appsyncApiUrl, editMyProfile, variables, user.accessToken)
+    const profile = data.editMyProfile
+
+    console.log(`[${user.username}] - edited the profile for [${user.email}]`)
+
+    return profile
+}
+
+const we_invoke_getImageUploadUrl = async (username: any, extension: any, contentType: any) => {
     const handler = require('../../lib/lambda/appsync/profile-get-image-upload-url').handler
-  
+
     const context = {}
     const event = {
-      identity: {
-        username
-      },
-      arguments: {
+        identity: {
+            username
+        },
+        arguments: {
+            extension,
+            contentType
+        },
+    }
+
+    return await handler(event, context)
+}
+
+const a_user_calls_getImageUploadUrl = async (user:any, extension:string, contentType:string) => {
+    const getImageUploadUrl = `query getImageUploadUrl($extension: String, $contentType: String) {
+        getImageUploadUrl(extension: $extension, contentType: $contentType)
+      }`
+      const variables = {
         extension,
         contentType
-      },
-    }
-  
-    return await handler(event, context)
-  }
+      }
+    
+      const data = await GraphQL(process.env.GRAPHQL_API_URL, getImageUploadUrl, variables, user.accessToken)
+      const url = data.getImageUploadUrl
+    
+      console.log(`[${user.username}] - got image upload url`)
+    
+      return url
+}
 
 module.exports = {
     we_invoke_confirmUserSignup,
     a_user_signs_up,
     we_invoke_an_appsync_template,
     a_user_calls_getMyProfile,
+    a_user_calls_editMyProfile,
     we_invoke_getImageUploadUrl,
+    a_user_calls_getImageUploadUrl,
 }
 
 export { }

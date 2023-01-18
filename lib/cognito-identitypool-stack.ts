@@ -8,8 +8,8 @@ import { IRole } from 'aws-cdk-lib/aws-iam'
 import { UserPool, UserPoolClient } from 'aws-cdk-lib/aws-cognito'
 
 interface CognitoIdentityPoolStackProps extends StackProps {
-    appName: String,
-    stage: String,
+    appName:string,
+    stage:string,
 	userpool: UserPool
 	userpoolClient: UserPoolClient
 }

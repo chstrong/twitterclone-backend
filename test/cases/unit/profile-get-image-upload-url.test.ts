@@ -1,8 +1,8 @@
-const when = require('../steps/when')
+require('dotenv').config()
+const when = require('../../steps/when')
 const chance = require('chance').Chance()
-const ENV = require("../../cdk-env.json")
 
-const bucketName = ENV.S3BucketStack.TransferAssetsBucketName
+const bucketName = process.env.TRANSFER_BUCKET
 
 describe('When getImageUploadUrl runs', () => {
   it.each([

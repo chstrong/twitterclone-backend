@@ -1,11 +1,12 @@
 import { CfnOutput, RemovalPolicy, Stack, StackProps, Tags } from 'aws-cdk-lib'
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { Construct } from 'constructs'
+import { Construct } from 'constructs';
 
 interface S3BucketStackProps extends StackProps {
-    appName: String,
-    stage: String,
+    appName:string,
+    stage:string,
+    randomString:string,
 }
 
 export class S3BucketStack extends Stack {
@@ -15,7 +16,7 @@ export class S3BucketStack extends Stack {
         super(scope, id, props)
 
         const transferAssetsBucket = new s3.Bucket(this, 'TransferAssetsBucket', {
-            bucketName: `${props.appName.toLowerCase()}-transfer-assets-${props.stage.toLowerCase()}-yd1hdr4x`,
+            bucketName: `${props.appName.toLowerCase()}-transfer-assets-${props.stage.toLowerCase()}-${props.randomString}`,
             transferAcceleration: true,
             cors: [
                 {
@@ -28,6 +29,7 @@ export class S3BucketStack extends Stack {
                 },
             ],
             removalPolicy: RemovalPolicy.DESTROY,
+            autoDeleteObjects: true,
         });
 
         this.transferAssetsBucket = transferAssetsBucket

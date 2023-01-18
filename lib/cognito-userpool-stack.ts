@@ -10,8 +10,8 @@ import { NodejsFunction } from "aws-cdk-lib/aws-lambda-nodejs";
 import { Construct } from 'constructs'
 
 interface CognitoUserPoolStackProps extends StackProps {
-	appName: String,
-	stage: String,
+	appName:string,
+	stage:string,
 	confirmUserSignupHandler: NodejsFunction,
 }
 

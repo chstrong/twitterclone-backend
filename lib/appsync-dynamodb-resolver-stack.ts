@@ -6,25 +6,22 @@ import {
     MappingTemplate,
 } from '@aws-cdk/aws-appsync-alpha'
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 
-interface AppsyncProfileResolverStackProps extends StackProps {
-    appName: String,
-    stage: String,
+interface AppsyncDynamoDbResolverStackProps extends StackProps {
+    appName:string,
+    stage:string,
     api: GraphqlApi,
     userTable: Table,
-    profileGetImageUploadUrlHandler: NodejsFunction
 }
 
-export class AppsyncProfileResolverStack extends Stack {
-    constructor(scope: Construct, id: string, props: AppsyncProfileResolverStackProps) {
+export class AppsyncDynamoDbResolverStack extends Stack {
+    constructor(scope: Construct, id: string, props: AppsyncDynamoDbResolverStackProps) {
         super(scope, id, props);
 
+        // CREATE DATASOURCES
         const UserTableDs = props.api.addDynamoDbDataSource('UserTableDs', props.userTable);
-        const ProfileGetImageUploadUrlDs = props.api.addLambdaDataSource('ProfileGetImageUploadUrlDs', props.profileGetImageUploadUrlHandler);
 
-
-        // Get My Profile
+        // GET MY PROFILE RESOLVER
         UserTableDs.createResolver('GetMyProfile', {
             typeName: 'Query',
             fieldName: 'getMyProfile',
@@ -36,7 +33,7 @@ export class AppsyncProfileResolverStack extends Stack {
             ),
         });
 
-        // Edit My Profile
+        // EDIT MY PROFILE RESOLVER
         UserTableDs.createResolver('EditMyProfile', {
             typeName: 'Mutation',
             fieldName: 'editMyProfile',
@@ -46,11 +43,6 @@ export class AppsyncProfileResolverStack extends Stack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, 'graphql/mapping-templates/Mutation.editMyProfile.response.vtl')
             ),
-        });
-
-        ProfileGetImageUploadUrlDs.createResolver('ProfileGetImageUploadUrl', {
-            typeName: 'Query',
-            fieldName: 'getImageUploadUrl',
         });
     }
 }

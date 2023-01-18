@@ -10,8 +10,8 @@ import {
 import { UserPool } from 'aws-cdk-lib/aws-cognito'
 
 interface AppsyncApiStackProps extends StackProps {
-  appName: String,
-  stage: String,
+  appName: string,
+  stage: string,
   userPool: UserPool
 }
 
