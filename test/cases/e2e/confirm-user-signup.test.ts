@@ -1,6 +1,6 @@
-const given = require('../steps/given')
-const when = require('../steps/when')
-const then = require('../steps/then')
+const given = require('../../steps/given')
+const when = require('../../steps/when')
+const then = require('../../steps/then')
 
 describe('When a user signs up', () => {
     it('The user\'s profile should be saved in DynamoDB', async () => {
