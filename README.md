@@ -111,7 +111,7 @@ We want to ensure that this file, as it contains sensitive data is not checked i
 
 ## Signup a user through AWS CLI
 
-aws cognito-idp --region us-east-1 sign-up --client-id 3nj6jd3nt6id1iu6evq4ib8eob --username test@test.com --password 123456 --user-attributes Name=name,Value=Testuser
+aws cognito-idp --region us-east-1 sign-up --client-id 5fdv16cdmp7nf5rj06oi5u1tnm --username test@test.com --password 123456 --user-attributes Name=name,Value=Testuser
 
 ## Testing
 

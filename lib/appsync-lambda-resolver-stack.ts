@@ -9,7 +9,6 @@ interface AppsyncLambdaResolverStackProps extends StackProps {
     appName:string,
     stage:string,
     api: GraphqlApi,
-    profileGetImageUploadUrlHandler: NodejsFunction,
     tweetHandler: NodejsFunction,
 }
 
@@ -18,14 +17,7 @@ export class AppsyncLambdaResolverStack extends Stack {
         super(scope, id, props);
         
         // CREATE DATASOURCES
-        const ProfileGetImageUploadUrlDs = props.api.addLambdaDataSource('ProfileGetImageUploadUrlDs', props.profileGetImageUploadUrlHandler);
         const TweetDs = props.api.addLambdaDataSource('TweetDs', props.tweetHandler);
-
-        // PROFILE GET IMAGE UPLOAD URL RESOLVER
-        ProfileGetImageUploadUrlDs.createResolver('ProfileGetImageUploadUrl', {
-            typeName: 'Query',
-            fieldName: 'getImageUploadUrl',
-        });
 
         // TWEET RESOLVER
         TweetDs.createResolver('Tweet', {

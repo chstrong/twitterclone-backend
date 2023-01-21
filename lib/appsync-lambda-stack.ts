@@ -13,35 +13,13 @@ interface AppsyncLambdaStackProps extends StackProps {
     userTable: Table,
     tweetTable: Table,
     timelineTable: Table,
-    transferAssetsBucket: Bucket
 }
 
 export class AppsyncLambdaStack extends Stack {
-    public readonly profileGetImageUploadUrlHandler: NodejsFunction
     public readonly tweetHandler: NodejsFunction
 
 	constructor(scope: Construct, id: string, props: AppsyncLambdaStackProps) {
 		super(scope, id, props)
-
-        // PROFILE GET IMAGE UPLOAD URL HANDLER
-		const profileGetImageUploadUrlHandler = new NodejsFunction(this, "ProfileGetImageUploadUrlHandler", {
-            functionName: `${props.appName.toLowerCase()}-profile-get-image-upload-url-${props.stage.toLowerCase()}`,
-            description: 'Profile Image Upload Url Handler',
-            runtime: Runtime.NODEJS_14_X,
-            entry: path.join(__dirname, `/lambda/appsync/profile-get-image-upload-url.ts`),
-            handler: "handler",
-            environment: {
-                USER_TABLE: props.userTable.tableName,
-                TRANSFER_BUCKET: props.transferAssetsBucket.bucketName
-            },
-        });
-
-        props.userTable.grantWriteData(profileGetImageUploadUrlHandler);
-        props.transferAssetsBucket.grantPut(profileGetImageUploadUrlHandler);
-        props.transferAssetsBucket.grantPutAcl(profileGetImageUploadUrlHandler);
-
-        this.profileGetImageUploadUrlHandler = profileGetImageUploadUrlHandler;
-
 
         // TWEET HANDLER
         const tweetHandler = new NodejsFunction(this, 'TweetHandler', {
@@ -57,9 +35,9 @@ export class AppsyncLambdaStack extends Stack {
             },
         });
 
-        props.userTable.grantWriteData(tweetHandler);
-        props.tweetTable.grantWriteData(tweetHandler);
-        props.timelineTable.grantWriteData(tweetHandler);
+        props.userTable.grantReadWriteData(tweetHandler);
+        props.tweetTable.grantReadWriteData(tweetHandler);
+        props.timelineTable.grantReadWriteData(tweetHandler);
 
         this.tweetHandler = tweetHandler;
 	}

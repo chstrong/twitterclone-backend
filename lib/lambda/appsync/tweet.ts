@@ -18,18 +18,16 @@ async function create(event: any) {
   const { username } = event.identity
   const id = ulid.ulid()
   const timestamp = new Date().toJSON()
-  //const hashTags = extractHashTags(text)
 
   const newTweet = {
     __typename: TweetTypes.TWEET,
-    id,
-    text,
+    id: id,
     creator: username,
+    text: text,
     createdAt: timestamp,
     replies: 0,
     likes: 0,
     retweets: 0,
-    //hashTags
   }
 
   await DocumentClient.transactWrite({

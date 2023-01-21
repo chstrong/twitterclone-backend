@@ -156,21 +156,37 @@ const we_invoke_getImageUploadUrl = async (username: any, extension: any, conten
     return await handler(event, context)
 }
 
-const a_user_calls_getImageUploadUrl = async (user:any, extension:string, contentType:string) => {
+const a_user_calls_getImageUploadUrl = async (user: any, extension: string, contentType: string) => {
     const getImageUploadUrl = `query getImageUploadUrl($extension: String, $contentType: String) {
         getImageUploadUrl(extension: $extension, contentType: $contentType)
       }`
-      const variables = {
+    const variables = {
         extension,
         contentType
-      }
-    
-      const data = await GraphQL(process.env.GRAPHQL_API_URL, getImageUploadUrl, variables, user.accessToken)
-      const url = data.getImageUploadUrl
-    
-      console.log(`[${user.username}] - got image upload url`)
-    
-      return url
+    }
+
+    const data = await GraphQL(process.env.GRAPHQL_API_URL, getImageUploadUrl, variables, user.accessToken)
+    const url = data.getImageUploadUrl
+
+    console.log(`[${user.username}] - got image upload url`)
+
+    return url
+}
+
+const we_invoke_tweet = async (username: any, text: string) => {
+    const handler = require('../../lib/lambda/appsync/tweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            text
+        }
+    }
+
+    return await handler(event, context)
 }
 
 module.exports = {
@@ -181,6 +197,7 @@ module.exports = {
     a_user_calls_editMyProfile,
     we_invoke_getImageUploadUrl,
     a_user_calls_getImageUploadUrl,
+    we_invoke_tweet,
 }
 
 export { }
