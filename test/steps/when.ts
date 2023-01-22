@@ -189,6 +189,29 @@ const we_invoke_tweet = async (username: any, text: string) => {
     return await handler(event, context)
 }
 
+const a_user_calls_tweet = async (user: any, text: string) => {
+    const tweet = `mutation tweet($text: String) {
+        tweet(text: $text) {
+            id,
+            createdAt,
+            text,
+            replies,
+            likes,
+            retweets
+        }
+      }`
+    const variables = {
+        text
+    }
+
+    const data = await GraphQL(process.env.GRAPHQL_API_URL, tweet, variables, user.accessToken)
+    const newTweet = data.tweet
+
+    console.log(`[${user.username}] - posted new tweet`)
+
+    return newTweet
+}
+
 module.exports = {
     we_invoke_confirmUserSignup,
     a_user_signs_up,
@@ -198,6 +221,7 @@ module.exports = {
     we_invoke_getImageUploadUrl,
     a_user_calls_getImageUploadUrl,
     we_invoke_tweet,
+    a_user_calls_tweet,
 }
 
 export { }
