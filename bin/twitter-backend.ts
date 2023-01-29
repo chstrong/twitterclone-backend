@@ -76,6 +76,7 @@ const appSyncDynamoDbResolverStack = new AppsyncDynamoDbResolverStack(app, 'Apps
   stage: configStack.stage,
   api: appsyncApiStack.api,
   userTable: dynamodbTableStack.userTable,
+  tweetTable: dynamodbTableStack.tweetTable,
 })
 
 // Creates the Appsync DynamoDB Lambda resolvers

@@ -111,7 +111,7 @@ We want to ensure that this file, as it contains sensitive data is not checked i
 
 ## Signup a user through AWS CLI
 
-aws cognito-idp --region us-east-1 sign-up --client-id 5fdv16cdmp7nf5rj06oi5u1tnm --username test@test.com --password 123456 --user-attributes Name=name,Value=Testuser
+aws cognito-idp --region us-east-1 sign-up --client-id 3sve8sftvq6f37thh7n8vbupks --username test@test.com --password 123456 --user-attributes Name=name,Value=Testuser
 
 ## Testing
 
@@ -120,6 +120,14 @@ Running a single test file.
 ```
 npx jest Foo.test.js
 ```
+
+## Changes to course
+
+- Partition and Sort key have to be provided mandatory when both are specified. This wasn't the case in earlier versions of DynamoDB queries.
+
+## Tips
+
+- When testing queries in the console and they fail, there is a small LOGS checkbox below the output field. Enable this, run the query and you can then jump to the Cloudwatch logs by clicking on the link.
 
 ## CDK
 
