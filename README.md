@@ -125,6 +125,14 @@ npx jest Foo.test.js
 
 - Partition and Sort key have to be provided mandatory when both are specified. This wasn't the case in earlier versions of DynamoDB queries.
 
+- followers and followedBy are not yet set and can't be tested in getTweets query.
+
+## Issues
+
+- In "Implement getTweets Query", under Otherprofile, following and followedBy have not been implemented yet.
+
+- "Add acceptance test for tweet mutation" is cut off to early. When implementing "Add acceptance test for getTweets" the a_user_calls_tweets function has already been modified and looks different.
+
 ## Tips
 
 - When testing queries in the console and they fail, there is a small LOGS checkbox below the output field. Enable this, run the query and you can then jump to the Cloudwatch logs by clicking on the link.

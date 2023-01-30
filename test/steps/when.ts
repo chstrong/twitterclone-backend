@@ -189,8 +189,8 @@ const we_invoke_tweet = async (username: any, text: string) => {
     return await handler(event, context)
 }
 
-const a_user_calls_tweet = async (user: any, text: string) => {
-    const tweet = `mutation tweet($text: String) {
+const a_user_calls_tweet = async (user: any, text: any) => {
+    const tweet = `mutation tweet($text: String!) {
         tweet(text: $text) {
             id,
             createdAt,
@@ -200,9 +200,12 @@ const a_user_calls_tweet = async (user: any, text: string) => {
             retweets
         }
       }`
+
     const variables = {
         text
     }
+
+    console.log(text)
 
     const data = await GraphQL(process.env.GRAPHQL_API_URL, tweet, variables, user.accessToken)
     const newTweet = data.tweet
