@@ -27,7 +27,7 @@ describe('Given an authenticated user', () => {
                 retweets: 0
             })
         })
-/*
+
         describe('When he calls getTweets', () => {
             let tweets: any, nextToken: string
             beforeAll(async () => {
@@ -37,6 +37,8 @@ describe('Given an authenticated user', () => {
             })
 
             it('He will see the new tweet in the tweets array', () => {
+                console.log(tweets[0])
+                console.log(tweet)
                 expect(nextToken).toBeNull()
                 expect(tweets.length).toEqual(1)
                 expect(tweets[0]).toEqual(tweet)
@@ -49,9 +51,8 @@ describe('Given an authenticated user', () => {
                         message: expect.stringContaining('max limit is 25')
                     })
             })
-        
+
         })
-        */
     })
 })
 
