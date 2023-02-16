@@ -8,11 +8,15 @@ import {
 	FieldLogLevel,
 } from '@aws-cdk/aws-appsync-alpha'
 import { UserPool } from 'aws-cdk-lib/aws-cognito'
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { Config } from '../shared/stack-helper';
 
 interface AppsyncApiStackProps extends StackProps {
-  appName: string,
-  stage: string,
-  userPool: UserPool
+  config: Config,
+  userPool: UserPool,
+  userTable: Table,
+  tweetTable: Table,
+  timelineTable: Table
 }
 
 export class AppsyncApiStack extends Stack {
@@ -22,7 +26,7 @@ export class AppsyncApiStack extends Stack {
     super(scope, id, props);
 
     const api = new GraphqlApi(this, 'GraphqlAPI', {
-      name: `${props.appName.toLowerCase()}-${props.stage.toLowerCase()}`,
+      name: `${props.config.appName.toLowerCase()}-${props.config.stage.toLowerCase()}`,
       schema: SchemaFile.fromAsset(path.join(__dirname, 'graphql/schema.graphql')),
       authorizationConfig: {
         defaultAuthorization: {

@@ -1,11 +1,13 @@
 import { Construct } from 'constructs';
-import { Stack, StackProps } from 'aws-cdk-lib'
+import { CfnOutput, Stack, StackProps } from 'aws-cdk-lib'
 import * as path from 'path'
+import * as fs from 'fs'
 import {
     GraphqlApi,
     MappingTemplate,
 } from '@aws-cdk/aws-appsync-alpha'
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
+//import VtlReplace from './shared/vtlreplace';
 
 interface AppsyncDynamoDbResolverStackProps extends StackProps {
     appName: string,
@@ -13,6 +15,7 @@ interface AppsyncDynamoDbResolverStackProps extends StackProps {
     api: GraphqlApi,
     userTable: Table,
     tweetTable: Table,
+    timelineTable: Table,
 }
 
 export class AppsyncDynamoDbResolverStack extends Stack {
@@ -22,6 +25,7 @@ export class AppsyncDynamoDbResolverStack extends Stack {
         // CREATE DATASOURCES
         const UserTableDs = props.api.addDynamoDbDataSource('UserTableDs', props.userTable);
         const TweetTableDs = props.api.addDynamoDbDataSource('TweetTableDs', props.tweetTable);
+        const TimelineTableDs = props.api.addDynamoDbDataSource('TimelineTableDs', props.timelineTable);
 
         // GET MY PROFILE RESOLVER
         UserTableDs.createResolver('GetMyProfile', {
@@ -45,7 +49,7 @@ export class AppsyncDynamoDbResolverStack extends Stack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, 'graphql/mapping-templates/Mutation.editMyProfile.response.vtl')
             ),
-        });        
+        });
 
         // GET TWEETS RESOLVER
         TweetTableDs.createResolver('GetTweets', {
@@ -56,6 +60,18 @@ export class AppsyncDynamoDbResolverStack extends Stack {
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, 'graphql/mapping-templates/Query.getTweets.response.vtl')
+            ),
+        });
+
+        // GET MY TIMELINE RESOLVER
+        TimelineTableDs.createResolver('GetMyTimeline', {
+            typeName: 'Query',
+            fieldName: 'getMyTimeline',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, 'graphql/mapping-templates/Query.getMyTimeline.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, 'graphql/mapping-templates/Query.getMyTimeline.response.vtl')
             ),
         });
 
@@ -70,5 +86,20 @@ export class AppsyncDynamoDbResolverStack extends Stack {
                 path.join(__dirname, 'graphql/mapping-templates/Tweet.profile.response.vtl')
             ),
         });
+/*
+        // NESTED FIELD PROFILE RESOLVER
+        const vtlfilepath:string = path.join(__dirname, 'graphql/mapping-templates/TimelinePage.tweets.request.vtl')
+        const attrs = new Map<string,string>().set("{TWEETTABLE}", props.timelineTable.tableName);
+        const mapTmpl = VtlReplace(vtlfilepath, attrs);
+
+        TweetTableDs.createResolver('NestedTimelineProfile', {
+            typeName: 'TimelinePage',
+            fieldName: 'tweets',
+            requestMappingTemplate: MappingTemplate.fromString(mapTmpl),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, 'graphql/mapping-templates/TimelinePage.tweets.response.vtl')
+            ),
+        });
+            */
     }
 }

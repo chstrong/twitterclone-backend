@@ -2,23 +2,13 @@
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 
-import { DynamoDbTableStack } from '../lib/dynamodb-table-stack'
-import { CognitoLambdaStack } from '../lib/cognito-lambda-stack';
-import { CognitoUserPoolStack } from '../lib/cognito-userpool-stack'
-//import { CognitoIdentityPoolStack } from '../lib/cognito-identitypool-stack'
-import { AppsyncApiStack } from '../lib/appsync-api-stack'
-
-import { ConfigStack } from '../lib/config-stack';
-import { AppsyncDynamoDbResolverStack } from '../lib/appsync-dynamodb-resolver-stack';
-import { AppsyncLambdaResolverStack } from '../lib/appsync-lambda-resolver-stack';
-import { AppsyncLambdaS3Stack } from '../lib/appsync-lambda-s3-stack';
-import { AppsyncLambdaStack } from '../lib/appsync-lambda-stack';
-import { S3BucketStack } from '../lib/s3-bucket-stack';
-import { AppsyncLambdaS3ResolverStack } from '../lib/appsync-lambda-s3-resolver-stack';
+import { TwitterAppStack } from '../lib/twitter-app-stack';
 
 const app = new cdk.App();
 
-const configStack = new ConfigStack(app, 'ConfigStack', {})
+new TwitterAppStack(app, 'TwitterAppStack', {})
+
+/*
 
 // Creates all DynamoDB Tables
 const dynamodbTableStack = new DynamoDbTableStack(app, 'DynamoDbTableStack', {
@@ -77,6 +67,7 @@ const appSyncDynamoDbResolverStack = new AppsyncDynamoDbResolverStack(app, 'Apps
   api: appsyncApiStack.api,
   userTable: dynamodbTableStack.userTable,
   tweetTable: dynamodbTableStack.tweetTable,
+  timelineTable: dynamodbTableStack.timelineTable,
 })
 
 // Creates the Appsync DynamoDB Lambda resolvers
@@ -94,3 +85,5 @@ const appSyncLambdaS3ResolverStack = new AppsyncLambdaS3ResolverStack(app, 'Apps
   api: appsyncApiStack.api,
   profileGetImageUploadUrlHandler: appsyncLambdaS3Stack.profileGetImageUploadUrlHandler,
 })
+
+*/
