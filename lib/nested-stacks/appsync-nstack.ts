@@ -114,6 +114,17 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        TweetTableDs.createResolver('NestedTimelineProfile', {
+            typeName: 'TimelinePage',
+            fieldName: 'tweets',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/TimelinePage.tweets.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/TimelinePage.tweets.response.vtl')
+            ),
+        });
+
         // LAMBDA FUNCTIONS
         const profileImageUploadUrlHandler = new NodejsFunction(this, "ProfileGetImageUploadUrlHandler", {
             functionName: `${props.config.appName.toLowerCase()}-profile-get-image-upload-url-${props.config.stage.toLowerCase()}`,

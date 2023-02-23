@@ -9,9 +9,10 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "deploy": "cdk deploy --outputs-file=cdk-env.json --require-approval never && npm run build-env",
+    "deploy": "npm run replace-vtl && cdk deploy --outputs-file=cdk-env.json --require-approval never && npm run build-env",
     "destroy": "cdk destroy --all",
     "build-env": "node ./scripts/cdkenv2dotenv.js",
+    "replace-vtl": "node ./scripts/vtlreplace.js",
     "integration-test": "jest --verbose ./test/cases/integration",
     "e2e-test": "jest --verbose ./test/cases/e2e",
     "unit-test": "jest --verbose ./test/cases/unit"
