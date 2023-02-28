@@ -9,6 +9,7 @@ describe('Given an authenticated user', () => {
     let user: any
     beforeAll(async () => {
         user = await given.an_authenticated_user()
+        console.log(user)
     })
 
     describe('When he sends a tweet', () => {

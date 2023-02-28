@@ -103,6 +103,7 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // NESTED FIELDS
         UserTableDs.createResolver('NestedTweetProfile', {
             typeName: 'Tweet',
             fieldName: 'profile',

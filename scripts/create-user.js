@@ -53,10 +53,29 @@ function deleteCognitoUser(username) {
     }).promise();
 }
 
+const send_tweet = async (username, text) => {
+    const handler = require('../lib/lambda/appsync/tweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            text
+        }
+    }
+
+    return await handler(event, context)
+}
+
 if(process.argv[2] === "add") {
     createCognitoUser("test@test.com", "123456")
 } else if(process.argv[2] == "delete") {
     deleteCognitoUser('test@test.com')
+} else if(process.argv[2] == "send-tweet") {
+    const reply = send_tweet("test@test.com", "this is my tweet")
+    console.log(reply)
 } else {
     console.log("Use add or delete")
 }

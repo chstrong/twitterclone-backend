@@ -73,6 +73,7 @@ const an_authenticated_user = async () => {
         username,
         name,
         email,
+        password,
         idToken: auth.AuthenticationResult.IdToken,
         accessToken: auth.AuthenticationResult.AccessToken
     }
@@ -81,7 +82,7 @@ const an_authenticated_user = async () => {
 module.exports = {
     a_random_user,
     an_appsync_context,
-    an_authenticated_user
+    an_authenticated_user,
 }
 
 export { }

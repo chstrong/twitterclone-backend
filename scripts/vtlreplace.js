@@ -20,6 +20,10 @@ const VtlReplace = (templatepath, filepath, attributes) => {
 const attributes = new Map()
 attributes.set("{TWEET_TABLE}", process.env.TWEET_TABLE)
 
-const templatepath = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.request_template.vtl')
-const filepath = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.request.vtl')
-VtlReplace(templatepath, filepath, attributes)
+const timelinePageTweetsRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.request_template.vtl')
+const timelinePageTweetsRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.request.vtl')
+VtlReplace(timelinePageTweetsRequestTmpl, timelinePageTweetsRequestFile, attributes)
+
+const timelinePageTweetsResponseTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.response_template.vtl')
+const timelinePageTweetsResponseFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.response.vtl')
+VtlReplace(timelinePageTweetsResponseTmpl, timelinePageTweetsResponseFile, attributes)
