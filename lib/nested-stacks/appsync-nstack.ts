@@ -17,7 +17,7 @@ import { Runtime } from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 
 interface AppsyncApiStackProps extends StackProps {
-    config: Config
+    config: Config,
     userPool: UserPool,
     userTable: Table,
     tweetTable: Table,
@@ -129,7 +129,7 @@ export class AppsyncApiStack extends NestedStack {
             assumedBy: new iam.ServicePrincipal('appsync.amazonaws.com'),
         });
 
-        // Allow the role to access both DynamoDB tables
+        // Allow the role to access all three DynamoDB tables
         props.likeTable.grantReadWriteData(role);
         props.tweetTable.grantReadWriteData(role);
         props.userTable.grantReadWriteData(role);
@@ -174,6 +174,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/TimelinePage.tweets.response.vtl')
+            ),
+        });
+
+        // NestedTweetLiked
+        // ---------------------------------------------------------------
+        LikeTableDs.createResolver('NestedTweetLiked', {
+            typeName: 'Tweet',
+            fieldName: 'liked',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.liked.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.liked.response.vtl')
             ),
         });
 
