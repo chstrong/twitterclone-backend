@@ -15,6 +15,7 @@ const envVars = {
     "USER_TABLE": cdkEnv.TwitterAppStack.UserTableName,
     "TWEET_TABLE": cdkEnv.TwitterAppStack.TweetTableName,
     "TIMELINE_TABLE": cdkEnv.TwitterAppStack.TimelineTableName,
+    "LIKE_TABLE": cdkEnv.TwitterAppStack.LikeTableName,
     "TRANSFER_BUCKET": cdkEnv.TwitterAppStack.TransferAssetsBucketName,
 }
 

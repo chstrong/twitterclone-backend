@@ -19,6 +19,8 @@ const VtlReplace = (templatepath, filepath, attributes) => {
 
 const attributes = new Map()
 attributes.set("{TWEET_TABLE}", process.env.TWEET_TABLE)
+attributes.set("{LIKE_TABLE}", process.env.LIKE_TABLE)
+attributes.set("{USER_TABLE}", process.env.USER_TABLE)
 
 const timelinePageTweetsRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.request_template.vtl')
 const timelinePageTweetsRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.request.vtl')
@@ -27,3 +29,7 @@ VtlReplace(timelinePageTweetsRequestTmpl, timelinePageTweetsRequestFile, attribu
 const timelinePageTweetsResponseTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.response_template.vtl')
 const timelinePageTweetsResponseFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/TimelinePage.tweets.response.vtl')
 VtlReplace(timelinePageTweetsResponseTmpl, timelinePageTweetsResponseFile, attributes)
+
+const mutationLikeRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.like.request_template.vtl')
+const mutationLikeRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.like.request.vtl')
+VtlReplace(mutationLikeRequestTmpl, mutationLikeRequestFile, attributes)

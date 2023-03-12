@@ -11,6 +11,7 @@ export class DynamoDbTableStack extends NestedStack {
 	public readonly userTable: Table
     public readonly tweetTable: Table
     public readonly timelineTable: Table
+    public readonly likeTable: Table
 
 	constructor(scope: Construct, id: string, props: DynamoDbTableStackProps) {
 		super(scope, id, props)
@@ -73,5 +74,23 @@ export class DynamoDbTableStack extends NestedStack {
         Tags.of(timelineTable).add('Application', `${props.config.appName}`)  
 
         this.timelineTable = timelineTable
+
+        
+        // LIKE TABLE
+        const likeTableName = `${props.config.appName.toLowerCase()}-like-${props.config.stage.toLowerCase()}`
+        const likeTable = new Table(this, 'LikeTable', {
+            tableName: likeTableName,
+			removalPolicy: RemovalPolicy.DESTROY,
+			billingMode: BillingMode.PAY_PER_REQUEST,
+			partitionKey: { name: 'userId', type: AttributeType.STRING },
+            sortKey: { name: 'tweetId', type: AttributeType.STRING },
+        })
+
+        // Define tags to be able to filter for billing
+        Tags.of(likeTable).add('Environment', `${props.config.stage}`);
+        Tags.of(likeTable).add('TableName', likeTableName);
+        Tags.of(likeTable).add('Application', `${props.config.appName}`)  
+
+        this.likeTable = likeTable        
 	}
 }
