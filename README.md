@@ -149,3 +149,27 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 * `cdk deploy`      deploy this stack to your default AWS account/region
 * `cdk diff`        compare deployed stack with current state
 * `cdk synth`       emits the synthesized CloudFormation template
+
+      email: 'jean-massey-zilr@test.com',
+      password: 'J)Xr64',
+
+query MyQuery {
+  getMyTimeline(limit: 10) {
+    nextToken
+    tweets {
+      id
+      createdAt
+      profile {
+        id
+        name
+        screenName
+      }
+      ... on Tweet {
+        likes
+        replies
+        retweets
+        text
+      }
+    }
+  }
+}
