@@ -54,27 +54,49 @@ describe('Given an authenticated user', () => {
         })
 
         describe('When he calls getMyTimeline', () => {
-            let tweets:any, nextToken:string
+            let tweets: any, nextToken: string
             beforeAll(async () => {
-              const result = await when.a_user_calls_getMyTimeline(user, 25)
-              tweets = result.tweets
-              nextToken = result.nextToken
+                const result = await when.a_user_calls_getMyTimeline(user, 25)
+                tweets = result.tweets
+                nextToken = result.nextToken
             })
-      
+
             it('He will see the new tweet in the tweets array', () => {
-              expect(nextToken).toBeNull()
-              expect(tweets.length).toEqual(1)
-              expect(tweets[0]).toEqual(tweet)
+                expect(nextToken).toBeNull()
+                expect(tweets.length).toEqual(1)
+                expect(tweets[0]).toEqual(tweet)
             })
-        
+
             it('He cannot ask for more than 25 tweets in a page', async () => {
-              await expect(when.a_user_calls_getMyTimeline(user, 26))
-                .rejects
-                .toMatchObject({
-                  message: expect.stringContaining('max limit is 25')
+                await expect(when.a_user_calls_getMyTimeline(user, 26))
+                    .rejects
+                    .toMatchObject({
+                        message: expect.stringContaining('max limit is 25')
+                    })
+            })
+
+            describe('When he likes the tweet', () => {
+                beforeAll(async () => {
+                    await when.a_user_calls_like(user, tweet.id)
+                })
+
+                it('Should see Tweet.liked as true', async () => {
+                    const { tweets } = await when.a_user_calls_getMyTimeline(user, 25)
+
+                    expect(tweets).toHaveLength(1)
+                    expect(tweets[0].id).toEqual(tweet.id)
+                    expect(tweets[0].liked).toEqual(true)
+                })
+
+                it('Should not be able to like the same tweet a second time', async () => {
+                    await expect(() => when.a_user_calls_like(user, tweet.id))
+                        .rejects
+                        .toMatchObject({
+                            message: expect.stringContaining('DynamoDB transaction error')
+                        })
                 })
             })
-          })
+        })
     })
 })
 
