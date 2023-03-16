@@ -6,12 +6,91 @@ const AWS = require('aws-sdk')
 const fs = require('fs')
 const velocityMapper = require('amplify-appsync-simulator/lib/velocity/value-mapper/mapper')
 const velocityTemplate = require('amplify-velocity-template')
-const { GraphQL } = require('../lib/graphql')
+const { GraphQL, registerFragment } = require('../lib/graphql')
 
 const awsRegion = process.env.AWS_REGION
 const userPoolId = process.env.COGNITO_USERPOOL_ID
 const userPoolClientId = process.env.COGNITO_USERPOOL_CLIENT_ID
 const appsyncApiUrl = process.env.GRAPHQL_API_URL
+
+const myProfileFragment = `
+fragment myProfileFields on MyProfile {
+    backgroundImageUrl
+    bio
+    birthdate
+    createdAt
+    followersCount
+    followingCount
+    id
+    email
+    imageUrl
+    likesCount
+    location
+    name
+    screenName
+    tweetsCount
+    website
+}
+`
+
+const otherProfileFragment = `
+fragment otherProfileFields on OtherProfile {
+  id
+  name
+  screenName
+  imageUrl
+  backgroundImageUrl
+  bio
+  location
+  website
+  birthdate
+  createdAt
+  followersCount
+  followingCount
+  tweetsCount
+  likesCount
+}
+`
+
+const iProfileFragment = `
+fragment iProfileFields on IProfile {
+  ... on MyProfile {
+    ... myProfileFields
+  }
+  ... on OtherProfile {
+    ... otherProfileFields
+  }
+}
+`
+
+const tweetFragment = `
+fragment tweetFields on Tweet {
+  id
+  profile {
+    ... iProfileFields
+  }
+  createdAt
+  text
+  replies
+  likes
+  retweets
+  liked
+}
+`
+
+const iTweetFragment = `
+fragment iTweetFields on ITweet {
+  ... on Tweet {
+    ... tweetFields
+  }
+}
+`
+
+registerFragment('myProfileFields', myProfileFragment)
+registerFragment('otherProfileFields', otherProfileFragment)
+registerFragment('iProfileFields', iProfileFragment)
+registerFragment('tweetFields', tweetFragment)
+registerFragment('iTweetFields', iTweetFragment)
 
 const we_invoke_confirmUserSignup = async (email: String, name: String) => {
 
@@ -82,21 +161,7 @@ const we_invoke_an_appsync_template = (templatePath: any, context: any) => {
 const a_user_calls_getMyProfile = async (user: any) => {
     const getMyProfile = `query getMyProfile {
       getMyProfile {
-        backgroundImageUrl
-        bio
-        birthdate
-        createdAt
-        followersCount
-        followingCount
-        id
-        email
-        imageUrl
-        likesCount
-        location
-        name
-        screenName
-        tweetsCount
-        website
+        ... myProfileFields
       }
     }`
 
@@ -111,21 +176,7 @@ const a_user_calls_getMyProfile = async (user: any) => {
 const a_user_calls_editMyProfile = async (user: any, input: any) => {
     const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
         editMyProfile(newProfile: $input) {
-          backgroundImageUrl
-          bio
-          birthdate
-          createdAt
-          followersCount
-          followingCount
-          id
-          email
-          imageUrl
-          likesCount
-          location
-          name
-          screenName
-          tweetsCount
-          website
+            ... myProfileFields
         }
       }`
 
@@ -196,9 +247,7 @@ const a_user_calls_tweet = async (user: any, text: any) => {
         tweet(text: $text) {
             id
             profile {
-                id
-                name
-                screenName
+                ... iProfileFields
             }
             createdAt
             text
@@ -228,20 +277,7 @@ const a_user_calls_getTweets = async (user: any, userId: string, limit: Integer,
       getTweets(userId: $userId, limit: $limit, nextToken: $nextToken) {
         nextToken
         tweets {
-          id,
-          createdAt
-          profile {
-            id
-            name
-            screenName
-          }
-          ... on Tweet {
-            text
-            replies
-            likes
-            retweets
-            liked
-          }
+            ... iTweetFields
         }
       }
     }`
@@ -265,20 +301,7 @@ const a_user_calls_getMyTimeline = async (user: any, limit: number, nextToken: s
         getMyTimeline(limit: $limit, nextToken: $nextToken) {
           nextToken
           tweets {
-            id,
-            createdAt
-            profile {
-              id
-              name
-              screenName
-            }
-            ... on Tweet {
-              text
-              replies
-              likes
-              retweets
-              liked
-            }
+            ... iTweetFields
           }
         }
       }`
