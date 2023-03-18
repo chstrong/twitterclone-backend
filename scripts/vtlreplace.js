@@ -33,3 +33,7 @@ VtlReplace(timelinePageTweetsResponseTmpl, timelinePageTweetsResponseFile, attri
 const mutationLikeRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.like.request_template.vtl')
 const mutationLikeRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.like.request.vtl')
 VtlReplace(mutationLikeRequestTmpl, mutationLikeRequestFile, attributes)
+
+const mutationUnlikeRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.unlike.request_template.vtl')
+const mutationUnlikeRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.unlike.request.vtl')
+VtlReplace(mutationUnlikeRequestTmpl, mutationUnlikeRequestFile, attributes)

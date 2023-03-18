@@ -136,6 +136,7 @@ export class AppsyncApiStack extends NestedStack {
 
         LikeTableDs.ds.serviceRoleArn = role.roleArn
 
+        // Like Mutation
         LikeTableDs.createResolver('LikeMutation', {
             typeName: 'Mutation',
             fieldName: 'like',
@@ -146,6 +147,18 @@ export class AppsyncApiStack extends NestedStack {
                 path.join(__dirname, '../graphql/mapping-templates/Mutation.like.response.vtl')
             ),
         });
+
+        // Unlike Mutation
+        LikeTableDs.createResolver('UnlikeMutation', {
+            typeName: 'Mutation',
+            fieldName: 'unlike',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Mutation.unlike.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Mutation.unlike.response.vtl')
+            ),
+        });        
 
         // ---------------------------------------------------------------
         // NESTED FIELD RESOLVERS
