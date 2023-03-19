@@ -121,6 +121,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // GetLikes
+        // ---------------------------------------------------------------
+        LikeTableDs.createResolver('GetLikes', {
+            typeName: 'Query',
+            fieldName: 'getLikes',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Query.getLikes.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Query.getLikes.response.vtl')
+            ),
+        });        
+
         // LikeMutation
         // ---------------------------------------------------------------
 
@@ -180,13 +193,13 @@ export class AppsyncApiStack extends NestedStack {
         // NestedTimelineProfile
         // ---------------------------------------------------------------
         TweetTableDs.createResolver('NestedTimelineProfile', {
-            typeName: 'TimelinePage',
+            typeName: 'UnhydratedTweetsPage',
             fieldName: 'tweets',
             requestMappingTemplate: MappingTemplate.fromFile(
-                path.join(__dirname, '../graphql/mapping-templates/TimelinePage.tweets.request.vtl')
+                path.join(__dirname, '../graphql/mapping-templates/UnhydratedTweetsPage.tweets.request.vtl')
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
-                path.join(__dirname, '../graphql/mapping-templates/TimelinePage.tweets.response.vtl')
+                path.join(__dirname, '../graphql/mapping-templates/UnhydratedTweetsPage.tweets.response.vtl')
             ),
         });
 
