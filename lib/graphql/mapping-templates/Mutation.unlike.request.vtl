@@ -37,7 +37,7 @@
         "id": $util.dynamodb.toDynamoDBJson($context.identity.username)
       },
       "update": {
-        "expression": "ADD likesCounts :one",
+        "expression": "ADD likesCount :one",
         "expressionValues": {
           ":one": $util.dynamodb.toDynamoDBJson(-1)
         }
