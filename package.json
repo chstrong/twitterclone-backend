@@ -40,6 +40,7 @@
     "@aws-cdk/aws-appsync-alpha": "^2.57.0-alpha.0",
     "@aws-cdk/aws-cognito-identitypool-alpha": "^2.57.0-alpha.0",
     "@aws-sdk/client-appsync": "^3.241.0",
+    "@aws-sdk/types": "^3.296.0",
     "aws-cdk-lib": "2.57.0",
     "constructs": "^10.0.0",
     "source-map-support": "^0.5.21",

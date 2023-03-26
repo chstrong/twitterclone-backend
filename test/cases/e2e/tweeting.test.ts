@@ -132,6 +132,13 @@ describe('Given an authenticated user', () => {
                                 message: expect.stringContaining('DynamoDB transaction error')
                             })
                     })
+
+                    it('Should not see this tweet when he calls getLikes anymore', async () => {
+                        const { tweets, nextToken } = await when.a_user_calls_getLikes(user, user.username, 25)
+
+                        expect(nextToken).toBeNull()
+                        expect(tweets).toHaveLength(0)
+                    })
                 })
             })
         })

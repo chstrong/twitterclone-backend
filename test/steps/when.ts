@@ -162,6 +162,13 @@ const a_user_calls_getMyProfile = async (user: any) => {
     const getMyProfile = `query getMyProfile {
       getMyProfile {
         ... myProfileFields
+
+        tweets {
+            nextToken
+            tweets {
+                ... iTweetFields
+            }
+        }
       }
     }`
 
@@ -177,6 +184,13 @@ const a_user_calls_editMyProfile = async (user: any, input: any) => {
     const editMyProfile = `mutation editMyProfile($input: ProfileInput!) {
         editMyProfile(newProfile: $input) {
             ... myProfileFields
+
+            tweets {
+                nextToken
+                tweets {
+                    ... iTweetFields
+                }
+            }
         }
       }`
 
@@ -245,16 +259,7 @@ const we_invoke_tweet = async (username: any, text: string) => {
 const a_user_calls_tweet = async (user: any, text: any) => {
     const tweet = `mutation tweet($text: String!) {
         tweet(text: $text) {
-            id
-            profile {
-                ... iProfileFields
-            }
-            createdAt
-            text
-            replies
-            likes
-            retweets
-            liked
+            ... tweetFields
         }
       }`
 
@@ -362,7 +367,7 @@ const a_user_calls_getLikes = async (user: any, userId: any, limit: any, nextTok
         }
       }
     }`
-    
+
     const variables = {
         userId,
         limit,

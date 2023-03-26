@@ -23,6 +23,7 @@ interface AppsyncApiStackProps extends StackProps {
     tweetTable: Table,
     timelineTable: Table,
     likeTable: Table,
+    retweetTable: Table,
     transferAssetsBucket: Bucket
 }
 
@@ -216,6 +217,32 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // NestedMyProfileTweets
+        // ---------------------------------------------------------------
+        TweetTableDs.createResolver('NestedMyProfileTweets', {
+            typeName: 'MyProfile',
+            fieldName: 'tweets',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.response.vtl')
+            ),
+        });
+
+        // NestedOtherProfileTweets
+        // ---------------------------------------------------------------
+        TweetTableDs.createResolver('NestedOtherProfileTweets', {
+            typeName: 'OtherProfile',
+            fieldName: 'tweets',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.response.vtl')
+            ),
+        });
+
         // ---------------------------------------------------------------
         // LAMBDA FUNCTIONS
         // ---------------------------------------------------------------
@@ -255,10 +282,32 @@ export class AppsyncApiStack extends NestedStack {
         props.tweetTable.grantReadWriteData(tweetHandler);
         props.timelineTable.grantReadWriteData(tweetHandler);
 
+        // TweetHandler
+        // ---------------------------------------------------------------
+        const retweetHandler = new NodejsFunction(this, 'RetweetHandler', {
+            functionName: `${props.config.appName.toLowerCase()}-retweet-${props.config.stage.toLowerCase()}`,
+            description: 'Retweet Handler',
+            runtime: Runtime.NODEJS_14_X,
+            entry: path.join(__dirname, `../lambda/appsync/retweet.ts`),
+            handler: "handler",
+            environment: {
+                USER_TABLE: props.userTable.tableName,
+                RETWEET_TABLE: props.retweetTable.tableName,
+                TWEET_TABLE: props.tweetTable.tableName,
+                TIMELINE_TABLE: props.timelineTable.tableName,
+            },
+        });
+
+        props.userTable.grantReadWriteData(retweetHandler);
+        props.retweetTable.grantReadWriteData(retweetHandler);
+        props.tweetTable.grantReadWriteData(retweetHandler);
+        props.timelineTable.grantReadWriteData(retweetHandler);        
+
         // ---------------------------------------------------------------
         // CREATE LAMBDA RESOLVER DATASOURCES
         // ---------------------------------------------------------------
         const TweetDs = api.addLambdaDataSource('TweetDs', tweetHandler);
+        const RetweetDs = api.addLambdaDataSource('RetweetDs', retweetHandler);
         const ProfileImageUploadUrlDs = api.addLambdaDataSource('ProfileImageUploadUrlDs', profileImageUploadUrlHandler);
 
         // ---------------------------------------------------------------
@@ -273,6 +322,11 @@ export class AppsyncApiStack extends NestedStack {
         ProfileImageUploadUrlDs.createResolver('ProfileImageUploadUrl', {
             typeName: 'Query',
             fieldName: 'getImageUploadUrl',
+        });
+
+        RetweetDs.createResolver('Retweet', {
+            typeName: 'Mutation',
+            fieldName: 'retweet',
         });
     }
 }

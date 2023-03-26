@@ -47,6 +47,7 @@ export class TwitterAppStack extends Stack {
             tweetTable: dynamodbTableStack.tweetTable,
             timelineTable: dynamodbTableStack.timelineTable,
             likeTable: dynamodbTableStack.likeTable,
+            retweetTable: dynamodbTableStack.retweetTable,
             transferAssetsBucket: s3BucketStack.transferAssetsBucket,
         })
 

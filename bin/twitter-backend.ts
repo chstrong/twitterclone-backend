@@ -6,7 +6,9 @@ import { TwitterAppStack } from '../lib/twitter-app-stack';
 
 const app = new cdk.App();
 
-new TwitterAppStack(app, 'TwitterAppStack', {})
+const envUS  = { region: 'us-east-1' };
+
+new TwitterAppStack(app, 'TwitterAppStack', { env: envUS })
 
 /*
 
