@@ -29,3 +29,5 @@ describe('Given an authenticated user', () => {
     })
   })
 })
+
+export {}

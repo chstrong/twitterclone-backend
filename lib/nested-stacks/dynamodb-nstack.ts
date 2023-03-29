@@ -51,6 +51,13 @@ export class DynamoDbTableStack extends NestedStack {
             projectionType: ProjectionType.ALL,
         })
 
+        tweetTable.addGlobalSecondaryIndex({
+            indexName: `retweetsByCreator`,
+            partitionKey: { name: 'creator', type: AttributeType.STRING },
+            sortKey: { name: 'retweetOf', type: AttributeType.STRING },
+            projectionType: ProjectionType.ALL,
+        })
+
         // Define tags to be able to filter for billing
         Tags.of(tweetTable).add('Environment', `${props.config.stage}`);
         Tags.of(tweetTable).add('TableName', tweetTableName);

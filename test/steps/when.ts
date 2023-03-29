@@ -256,6 +256,22 @@ const we_invoke_tweet = async (username: any, text: string) => {
     return await handler(event, context)
 }
 
+const we_invoke_retweet = async (username: any, tweetId: any) => {
+    const handler = require('../../lib/lambda/appsync/retweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            tweetId
+        }
+    }
+
+    return await handler(event, context)
+}
+
 const a_user_calls_tweet = async (user: any, text: any) => {
     const tweet = `mutation tweet($text: String!) {
         tweet(text: $text) {
@@ -392,6 +408,7 @@ module.exports = {
     we_invoke_getImageUploadUrl,
     a_user_calls_getImageUploadUrl,
     we_invoke_tweet,
+    we_invoke_retweet,
     a_user_calls_tweet,
     a_user_calls_getTweets,
     a_user_calls_getMyTimeline,

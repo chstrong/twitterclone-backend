@@ -88,6 +88,10 @@ export class TwitterAppStack extends Stack {
             value: dynamodbTableStack.likeTable.tableName,
         })
 
+        new CfnOutput(this, 'RetweetTableName', {
+            value: dynamodbTableStack.retweetTable.tableName,
+        })
+
         new CfnOutput(this, 'UserPoolId', {
 			value: cognitoStack.userPool.userPoolId,
 		})

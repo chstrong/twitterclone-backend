@@ -191,6 +191,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // NestedRetweetProfile
+        // ---------------------------------------------------------------
+        UserTableDs.createResolver('NestedRetweetProfile', {
+            typeName: 'Retweet',
+            fieldName: 'profile',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.profile.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.profile.response.vtl')
+            ),
+        });        
+
         // NestedTimelineProfile
         // ---------------------------------------------------------------
         TweetTableDs.createResolver('NestedTimelineProfile', {
@@ -217,6 +230,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // NestedRetweetOf
+        // ---------------------------------------------------------------
+        TweetTableDs.createResolver('NestedRetweetOf', {
+            typeName: 'Retweet',
+            fieldName: 'retweetOf',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.response.vtl')
+            ),
+        });
+
         // NestedMyProfileTweets
         // ---------------------------------------------------------------
         TweetTableDs.createResolver('NestedMyProfileTweets', {
@@ -228,7 +254,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.response.vtl')
             ),
-        });
+        });     
 
         // NestedOtherProfileTweets
         // ---------------------------------------------------------------
