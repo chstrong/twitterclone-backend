@@ -56,7 +56,9 @@ describe('Given an authenticated user with a tweet', () => {
     it('Saves the retweet in the Tweets table', async () => {
       await then.retweet_exists_in_TweetsTable(userA.username, anotherTweet.id)
     })
-/*
+
+
+    
     it('Saves the retweet in the Retweets table', async () => {
       await then.retweet_exists_in_RetweetsTable(userA.username, anotherTweet.id)
     })
@@ -77,7 +79,6 @@ describe('Given an authenticated user with a tweet', () => {
       expect(tweets[0].retweetOf).toEqual(anotherTweet.id)
       expect(tweets[1].tweetId).toEqual(tweet.id)
     })
-    */
   })
 
 })
