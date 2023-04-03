@@ -308,7 +308,7 @@ export class AppsyncApiStack extends NestedStack {
         props.tweetTable.grantReadWriteData(tweetHandler);
         props.timelineTable.grantReadWriteData(tweetHandler);
 
-        // TweetHandler
+        // RetweetHandler
         // ---------------------------------------------------------------
         const retweetHandler = new NodejsFunction(this, 'RetweetHandler', {
             functionName: `${props.config.appName.toLowerCase()}-retweet-${props.config.stage.toLowerCase()}`,

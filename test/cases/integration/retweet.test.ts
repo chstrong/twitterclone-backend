@@ -42,20 +42,21 @@ describe('Given an authenticated user with a tweet', () => {
     })
   })
 
-  /*
   describe("When he retweets another user's tweet", () => {
     let userB:any, anotherTweet:any
     const text = chance.string({ length: 16 })
+    
     beforeAll(async () => {
       userB = await given.an_authenticated_user()
       anotherTweet = await when.we_invoke_tweet(userB.username, text)
+      console.log(`Another Tweet: UserA: ${userA.username}, UserB: ${userB.username}, TweetB: ${anotherTweet.id}`)
       await when.we_invoke_retweet(userA.username, anotherTweet.id)
     })
 
     it('Saves the retweet in the Tweets table', async () => {
       await then.retweet_exists_in_TweetsTable(userA.username, anotherTweet.id)
     })
-
+/*
     it('Saves the retweet in the Retweets table', async () => {
       await then.retweet_exists_in_RetweetsTable(userA.username, anotherTweet.id)
     })
@@ -76,8 +77,8 @@ describe('Given an authenticated user with a tweet', () => {
       expect(tweets[0].retweetOf).toEqual(anotherTweet.id)
       expect(tweets[1].tweetId).toEqual(tweet.id)
     })
+    */
   })
-  */
 
 })
 
