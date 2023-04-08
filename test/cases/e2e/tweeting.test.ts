@@ -141,6 +141,61 @@ describe('Given an authenticated user', () => {
                     })
                 })
             })
+
+
+            describe('When he retweets the tweet', () => {
+                beforeAll(async () => {
+                    await when.a_user_calls_retweet(user, tweet.id)
+                })
+
+                it('Should see the retweet when he calls getTweets', async () => {
+                    const { tweets } = await when.a_user_calls_getTweets(user, user.username, 25)
+
+                    expect(tweets).toHaveLength(2)
+                    expect(tweets[0]).toMatchObject({
+                        profile: {
+                            id: user.username,
+                            tweetsCount: 2
+                        },
+                        retweetOf: {
+                            ...tweet,
+                            retweets: 1,
+                            retweeted: true,
+                            profile: {
+                                id: user.username,
+                                tweetsCount: 2
+                            }
+                        }
+                    })
+
+                    expect(tweets[1]).toMatchObject({
+                        ...tweet,
+                        retweets: 1,
+                        retweeted: true,
+                        profile: {
+                            id: user.username,
+                            tweetsCount: 2
+                        }
+                    })
+                })
+            })
+
+            it('Should not see the retweet when he calls getMyTimeline', async () => {
+                const { tweets } = await when.a_user_calls_getMyTimeline(user, 25)
+
+                expect(tweets).toHaveLength(1)
+                expect(tweets[0]).toMatchObject({
+                  ...tweet,
+                  retweets: 1,
+                  retweeted: true,
+                  profile: {
+                    id: user.username,
+                    tweetsCount: 2
+                  }
+                })
+            })
+
+
         })
     })
 })

@@ -74,7 +74,23 @@ fragment tweetFields on Tweet {
   replies
   likes
   retweets
+  retweeted
   liked
+}
+`
+
+const retweetFragment = `
+fragment retweetFields on Retweet {
+  id
+  profile {
+    ... iProfileFields
+  }
+  createdAt
+  retweetOf {
+    ... on Tweet {
+      ... tweetFields
+    }
+  }
 }
 `
 
@@ -82,6 +98,10 @@ const iTweetFragment = `
 fragment iTweetFields on ITweet {
   ... on Tweet {
     ... tweetFields
+  }
+
+  ... on Retweet {
+    ... retweetFields
   }
 }
 `
@@ -91,6 +111,7 @@ registerFragment('otherProfileFields', otherProfileFragment)
 registerFragment('iProfileFields', iProfileFragment)
 registerFragment('tweetFields', tweetFragment)
 registerFragment('iTweetFields', iTweetFragment)
+registerFragment('retweetFields', retweetFragment)
 
 const we_invoke_confirmUserSignup = async (email: String, name: String) => {
 
@@ -398,6 +419,23 @@ const a_user_calls_getLikes = async (user: any, userId: any, limit: any, nextTok
     return result
 }
 
+const a_user_calls_retweet = async (user:any, tweetId:any) => {
+    const retweet = `mutation retweet($tweetId: ID!) {
+      retweet(tweetId: $tweetId)
+    }`
+
+    const variables = {
+        tweetId
+    }
+
+    const data = await GraphQL(process.env.GRAPHQL_API_URL, retweet, variables, user.accessToken)
+    const result = data.retweet
+
+    console.log(`[${user.username}] - retweeted tweet [${tweetId}]`)
+
+    return result
+}
+
 
 module.exports = {
     we_invoke_confirmUserSignup,
@@ -415,6 +453,7 @@ module.exports = {
     a_user_calls_like,
     a_user_calls_unlike,
     a_user_calls_getLikes,
+    a_user_calls_retweet,
 }
 
 export { }

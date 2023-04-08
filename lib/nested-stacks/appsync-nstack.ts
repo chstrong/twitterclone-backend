@@ -65,6 +65,7 @@ export class AppsyncApiStack extends NestedStack {
         const TweetTableDs = api.addDynamoDbDataSource('TweetTableDs', props.tweetTable);
         const TimelineTableDs = api.addDynamoDbDataSource('TimelineTableDs', props.timelineTable);
         const LikeTableDs = api.addDynamoDbDataSource('LikeTableDs', props.likeTable);
+        const RetweetTableDs = api.addDynamoDbDataSource('RetweetTableDs', props.retweetTable);
 
         // ---------------------------------------------------------------
         // CREATE DYNAMODB RESOLVERS
@@ -266,6 +267,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.response.vtl')
+            ),
+        });
+
+        // TweetRetweet
+        // ---------------------------------------------------------------
+        RetweetTableDs.createResolver('NestedTweetRetweeted', {
+            typeName: 'Tweet',
+            fieldName: 'retweeted',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.response.vtl')
             ),
         });
 
