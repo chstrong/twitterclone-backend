@@ -36,7 +36,8 @@ async function create(event: any) {
         throw new Error('Tweet is not found')
     }
 
-    // Create new Tweet
+    // Create new Tweet of type retweet
+    // Creator will always be the logged in user
     const newTweet = {
         __typename: { S: TweetTypes.RETWEET },
         id: { S: id },
@@ -45,7 +46,7 @@ async function create(event: any) {
         retweetOf: { S: tweetId }
     }
 
-    // Create transaction
+    // Create transactItems array
     const transactItems = []
 
     // Add the new tweet to the tweets table
@@ -69,19 +70,13 @@ async function create(event: any) {
         }
     });
 
-    // If the retweet is not from the same user
-    let creator:any = username;
-    if(tweet.creator !== username) {
-        creator = tweet.creator
-    }
-
     // Update the retweets count of the tweet in the tweets table
     transactItems.push({
         Update: {
             TableName: TWEET_TABLE,
             Key: {
                 id: { S: tweetId },
-                creator: { S: creator },
+                creator: { S: username },
             },
             UpdateExpression: 'ADD retweets :one',
             ExpressionAttributeValues: {
