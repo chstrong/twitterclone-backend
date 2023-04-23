@@ -17,8 +17,7 @@
       "table": "{TWEET_TABLE}",
       "operation": "UpdateItem",
       "key": {
-        "id": $util.dynamodb.toDynamoDBJson($context.arguments.tweetId),
-        "creator": $util.dynamodb.toDynamoDBJson($context.identity.username)
+        "id": $util.dynamodb.toDynamoDBJson($context.arguments.tweetId)
       },
       "update": {
         "expression": "ADD likes :one",

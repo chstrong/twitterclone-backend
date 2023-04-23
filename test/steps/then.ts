@@ -49,19 +49,16 @@ const user_can_download_image_from = async (url: string) => {
     return resp.data
 }
 
-const tweet_exists_in_TweetsTable = async (id: string, sk: string) => {
+const tweet_exists_in_TweetsTable = async (id: string) => {
     const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
     console.log(`looking for tweet [${id}] in table [${process.env.TWEET_TABLE}]`)
     const resp = await DynamoDB.get({
         TableName: process.env.TWEET_TABLE,
         Key: {
-            id: id,
-            creator: sk
+            id
         }
     }).promise()
-
-    console.log(`Item is ${resp.Item}`)
 
     expect(resp.Item).toBeTruthy()
 

@@ -1,7 +1,5 @@
 import { Handler } from 'aws-lambda'
-import { DynamoDBClient, TransactWriteItemsCommand } from "@aws-sdk/client-dynamodb";
-const DynamoDB = require('aws-sdk/clients/dynamodb')
-const DocumentClient = new DynamoDB.DocumentClient()
+import { DynamoDBClient, TransactWriteItemsCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
 const ulid = require('ulid')
 const { TweetTypes } = require('../../shared/constants')
 
@@ -21,17 +19,17 @@ async function create(event: any) {
     const id = ulid.ulid()
     const timestamp = new Date().toJSON()
 
-    const getTweetResp = await DocumentClient.query({
-        TableName: TWEET_TABLE,
-        KeyConditionExpression: 'id = :tweetId',
-        ExpressionAttributeValues: {
-            ':tweetId': tweetId
-        },
-        Limit: 1
-    }).promise()
-
     // In order to retweet a tweet, the tweet must exist
-    const tweet = getTweetResp.Items[0]
+    const getQueryCmd = new GetItemCommand({
+        TableName: TWEET_TABLE,
+        Key: {
+            id: { S: tweetId }
+        }
+    })
+
+    const getTweetResp = await DynamoClient.send(getQueryCmd)
+
+    const tweet = getTweetResp.Item
     if (!tweet) {
         throw new Error('Tweet is not found')
     }
@@ -76,7 +74,6 @@ async function create(event: any) {
             TableName: TWEET_TABLE,
             Key: {
                 id: { S: tweetId },
-                creator: { S: username },
             },
             UpdateExpression: 'ADD retweets :one',
             ExpressionAttributeValues: {
@@ -101,10 +98,12 @@ async function create(event: any) {
         }
     });
 
-    console.log(`creator: [${tweet.creator}]; username: [${username}]`)
-    
+    console.log(`creator: [${tweet.creator.S}]; username: [${username}]`)
+
     // If the tweet that is retweeted is from another user
-    if (tweet.creator !== username) {
+    if (tweet.creator.S !== username) {
+        console.log(`tweet.creator: [${tweet.creator.S}], doesn't match username: [${username}]`)
+
         transactItems.push({
             Put: {
                 TableName: TIMELINE_TABLE,
@@ -127,7 +126,7 @@ async function create(event: any) {
     try {
         const result: any = await DynamoClient.send(command);
         console.log(result);
-    } catch (error:any) {
+    } catch (error: any) {
         console.error(error);
     }
 

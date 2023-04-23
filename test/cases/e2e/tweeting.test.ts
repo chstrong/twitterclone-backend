@@ -208,6 +208,8 @@ describe('Given an authenticated user', () => {
                 it('Should see the retweet when he calls getTweets', async () => {
                     const { tweets } = await when.a_user_calls_getTweets(userA, userA.username, 25)
 
+                    console.log(tweets[0])
+
                     expect(tweets).toHaveLength(3)
                     expect(tweets[0]).toMatchObject({
                         profile: {
@@ -242,13 +244,5 @@ describe('Given an authenticated user', () => {
         })
     })
 })
-
-// OTHER RETWEET
-// Get pushed to top of own timeline
-// List of tweets for account
-//
-// OWN RETWEET
-// Doesn't get pushed to timeline
-// Does show up as new tweet in profile
 
 export { }

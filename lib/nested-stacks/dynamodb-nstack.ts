@@ -41,7 +41,7 @@ export class DynamoDbTableStack extends NestedStack {
             removalPolicy: RemovalPolicy.DESTROY,
             billingMode: BillingMode.PAY_PER_REQUEST,
             partitionKey: { name: 'id', type: AttributeType.STRING },
-            sortKey: { name: 'creator', type: AttributeType.STRING },
+            //sortKey: { name: 'creator', type: AttributeType.STRING },
         })
 
         tweetTable.addGlobalSecondaryIndex({

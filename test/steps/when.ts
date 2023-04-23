@@ -36,6 +36,7 @@ fragment myProfileFields on MyProfile {
 const otherProfileFragment = `
 fragment otherProfileFields on OtherProfile {
   id
+  email
   name
   screenName
   imageUrl
@@ -303,8 +304,6 @@ const a_user_calls_tweet = async (user: any, text: any) => {
     const variables = {
         text
     }
-
-    console.log(text)
 
     const data = await GraphQL(process.env.GRAPHQL_API_URL, tweet, variables, user.accessToken)
     const newTweet = data.tweet

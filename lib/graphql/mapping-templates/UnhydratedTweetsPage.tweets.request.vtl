@@ -6,7 +6,6 @@
 #foreach ($item in $context.source.tweets)
   #set ($tweet = {})
   #set ($tweet.id = $item.tweetId)
-  #set ($tweet.creator = $item.userId)
   $util.qr($tweets.add($util.dynamodb.toMapValues($tweet)))
 #end
 

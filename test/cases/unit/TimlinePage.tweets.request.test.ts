@@ -22,8 +22,8 @@ describe('UnhydratedTweetsPage.tweets.request template', () => {
     const tweetId = chance.guid()
     const tableName:string = process.env.TWEET_TABLE!
     const tweets = [{
-        tweetId: tweetId,
-        userId: username
+        userId: username,
+        tweetId
     }]
     const context = given.an_appsync_context({ username }, {}, {}, { tweets })
     const result = when.we_invoke_an_appsync_template(templatePath, context)
@@ -35,7 +35,6 @@ describe('UnhydratedTweetsPage.tweets.request template', () => {
           [tableName]: {
             "keys": [{
                 id: { "S": tweetId },
-                creator: { "S": username }
           }],
             "consistentRead": false
           }

@@ -3,6 +3,7 @@ const when = require('../../steps/when')
 const then = require('../../steps/then')
 const chance = require('chance').Chance()
 
+
 describe('Given an authenticated user with a tweet', () => {
   let userA:any, tweet:any
   const text = chance.string({ length: 16 })
@@ -26,7 +27,7 @@ describe('Given an authenticated user with a tweet', () => {
     })
 
     it('Increments the retweets count in the Tweets table', async () => {
-      const { retweets } = await then.tweet_exists_in_TweetsTable(tweet.id, userA.username)
+      const { retweets } = await then.tweet_exists_in_TweetsTable(tweet.id)
 
       expect(retweets).toEqual(1)
     })
@@ -78,7 +79,6 @@ describe('Given an authenticated user with a tweet', () => {
       expect(tweets[1].tweetId).toEqual(tweet.id)
     })
   })
-
 })
 
 export {}
