@@ -133,6 +133,8 @@ npx jest Foo.test.js
 
 - "Add acceptance test for tweet mutation" is cut off to early. When implementing "Add acceptance test for getTweets" the a_user_calls_tweets function has already been modified and looks different.
 
+- TypeError: Cannot read properties of undefined (reading '0'): DynamoD V3 query might be missing S:
+
 ## Tips
 
 - When testing queries in the console and they fail, there is a small LOGS checkbox below the output field. Enable this, run the query and you can then jump to the Cloudwatch logs by clicking on the link.

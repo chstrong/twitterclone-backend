@@ -1,7 +1,5 @@
 import { Handler } from 'aws-lambda'
-import { DynamoDBClient, TransactWriteItemsCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
-const ulid = require('ulid')
-const { TweetTypes } = require('../../shared/constants')
+import { DynamoDBClient, TransactWriteItemsCommand, GetItemCommand, QueryCommand, QueryCommandOutput } from "@aws-sdk/client-dynamodb";
 
 const { USER_TABLE, TIMELINE_TABLE, TWEET_TABLE, RETWEET_TABLE } = process.env
 
@@ -16,8 +14,6 @@ export const handler: Handler = async (event: any) => {
 async function create(event: any) {
     const { tweetId } = event.arguments
     const { username } = event.identity
-    const id = ulid.ulid()
-    const timestamp = new Date().toJSON()
 
     // In order to retweet a tweet, the tweet must exist
     const getQueryCmd = new GetItemCommand({
@@ -34,37 +30,50 @@ async function create(event: any) {
         throw new Error('Tweet is not found')
     }
 
-    // Create new Tweet of type retweet
-    // Creator will always be the logged in user
-    const newTweet = {
-        __typename: { S: TweetTypes.RETWEET },
-        id: { S: id },
-        creator: { S: username },
-        createdAt: { S: timestamp },
-        retweetOf: { S: tweetId }
+    // Get the retweet
+    const queryParams = {
+        TableName: TWEET_TABLE,
+        IndexName: 'retweetsByCreator',
+        KeyConditionExpression: 'creator = :creator AND retweetOf = :tweetId',
+        ExpressionAttributeValues: {
+            ':creator': { S: username },
+            ':tweetId': { S: tweetId }
+        },
+        Limit: 1
     }
+
+    const queryResp: QueryCommandOutput = await DynamoClient.send(new QueryCommand(queryParams));
+
+    const retweet = queryResp.Items ? queryResp.Items[0] : null;
+    if (!retweet) {
+        throw new Error('Retweet is not found')
+    }
+
+    console.log("RETWEET IS: " + retweet.id.S)
 
     // Create transactItems array
     const transactItems = []
 
-    // Add the new tweet to the tweets table
+    // Delete the retweet from the TWEET table
     transactItems.push({
-        Put: {
+        Delete: {
             TableName: TWEET_TABLE,
-            Item: newTweet
+            Key: {
+                id: { S: retweet.id.S },
+            },
+            ConditionExpression: 'attribute_exists(id)'
         }
     });
 
-    // Add the tweet to the retweets table
+    // Delete the tweet from the RETWEET table
     transactItems.push({
-        Put: {
+        Delete: {
             TableName: RETWEET_TABLE,
-            Item: {
+            Key: {
                 userId: { S: username },
                 tweetId: { S: tweetId },
-                createdAt: { S: timestamp },
             },
-            ConditionExpression: 'attribute_not_exists(tweetId)'
+            ConditionExpression: 'attribute_exists(tweetId)'
         }
     });
 
@@ -75,9 +84,9 @@ async function create(event: any) {
             Key: {
                 id: { S: tweetId },
             },
-            UpdateExpression: 'ADD retweets :one',
+            UpdateExpression: 'ADD retweets :minusOne',
             ExpressionAttributeValues: {
-                ':one': { N: '1' }
+                ':minusOne': { N: '-1' }
             },
             ConditionExpression: 'attribute_exists(id)'
         }
@@ -90,9 +99,9 @@ async function create(event: any) {
             Key: {
                 id: { S: username }
             },
-            UpdateExpression: 'ADD tweetsCount :one',
+            UpdateExpression: 'ADD tweetsCount :minusOne',
             ExpressionAttributeValues: {
-                ':one': { N: '1' }
+                ':minusOne': { N: '-1' }
             },
             ConditionExpression: 'attribute_exists(id)'
         }
@@ -105,13 +114,11 @@ async function create(event: any) {
         console.log(`tweet.creator: [${tweet.creator.S}], doesn't match username: [${username}]`)
 
         transactItems.push({
-            Put: {
+            Delete: {
                 TableName: TIMELINE_TABLE,
-                Item: {
+                Key: {
                     userId: { S: username },
-                    tweetId: { S: id },
-                    retweetOf: { S: tweetId },
-                    timestamp: { S: timestamp },
+                    tweetId: { S: retweet.id.S },
                 }
             }
         });
@@ -125,6 +132,7 @@ async function create(event: any) {
 
     try {
         const result: any = await DynamoClient.send(command);
+        console.log(result);
     } catch (error: any) {
         console.error(error);
     }

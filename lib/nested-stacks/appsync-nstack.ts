@@ -341,13 +341,34 @@ export class AppsyncApiStack extends NestedStack {
         props.userTable.grantReadWriteData(retweetHandler);
         props.retweetTable.grantReadWriteData(retweetHandler);
         props.tweetTable.grantReadWriteData(retweetHandler);
-        props.timelineTable.grantReadWriteData(retweetHandler);        
+        props.timelineTable.grantReadWriteData(retweetHandler);
+        
+        
+        const unretweetHandler = new NodejsFunction(this, 'UnretweetHandler', {
+            functionName: `${props.config.appName.toLowerCase()}-unretweet-${props.config.stage.toLowerCase()}`,
+            description: 'Unretweet Handler',
+            runtime: Runtime.NODEJS_14_X,
+            entry: path.join(__dirname, `../lambda/appsync/unretweet.ts`),
+            handler: "handler",
+            environment: {
+                USER_TABLE: props.userTable.tableName,
+                RETWEET_TABLE: props.retweetTable.tableName,
+                TWEET_TABLE: props.tweetTable.tableName,
+                TIMELINE_TABLE: props.timelineTable.tableName,
+            },
+        });
+
+        props.userTable.grantReadWriteData(unretweetHandler);
+        props.retweetTable.grantReadWriteData(unretweetHandler);
+        props.tweetTable.grantReadWriteData(unretweetHandler);
+        props.timelineTable.grantReadWriteData(unretweetHandler);
 
         // ---------------------------------------------------------------
         // CREATE LAMBDA RESOLVER DATASOURCES
         // ---------------------------------------------------------------
         const TweetDs = api.addLambdaDataSource('TweetDs', tweetHandler);
         const RetweetDs = api.addLambdaDataSource('RetweetDs', retweetHandler);
+        const UnretweetDs = api.addLambdaDataSource('UnretweetDs', unretweetHandler);
         const ProfileImageUploadUrlDs = api.addLambdaDataSource('ProfileImageUploadUrlDs', profileImageUploadUrlHandler);
 
         // ---------------------------------------------------------------
@@ -367,6 +388,11 @@ export class AppsyncApiStack extends NestedStack {
         RetweetDs.createResolver('Retweet', {
             typeName: 'Mutation',
             fieldName: 'retweet',
+        });
+
+        UnretweetDs.createResolver('Unretweet', {
+            typeName: 'Mutation',
+            fieldName: 'unretweet',
         });
     }
 }

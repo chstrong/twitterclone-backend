@@ -418,7 +418,7 @@ const a_user_calls_getLikes = async (user: any, userId: any, limit: any, nextTok
     return result
 }
 
-const a_user_calls_retweet = async (user:any, tweetId:any) => {
+const a_user_calls_retweet = async (user: any, tweetId: any) => {
     const retweet = `mutation retweet($tweetId: ID!) {
       retweet(tweetId: $tweetId)
     }`
@@ -433,6 +433,22 @@ const a_user_calls_retweet = async (user:any, tweetId:any) => {
     console.log(`[${user.username}] - retweeted tweet [${tweetId}]`)
 
     return result
+}
+
+const we_invoke_unretweet = async (username:any, tweetId:any) => {
+    const handler = require('../../lib/lambda/appsync/unretweet').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            tweetId
+        }
+    }
+
+    return await handler(event, context)
 }
 
 
@@ -453,6 +469,7 @@ module.exports = {
     a_user_calls_unlike,
     a_user_calls_getLikes,
     a_user_calls_retweet,
+    we_invoke_unretweet,
 }
 
 export { }

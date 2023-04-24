@@ -104,7 +104,7 @@ const retweet_exists_in_RetweetsTable = async (userId: any, tweetId: any) => {
     return resp.Item
 }
 
-const there_are_N_tweets_in_TimelinesTable = async (userId:any, n:any) => {
+const there_are_N_tweets_in_TimelinesTable = async (userId: any, n: any) => {
     const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
     console.log(`looking for [${n}] tweets for user [${userId}] in table [${process.env.TIMELINE_TABLE}]`)
@@ -156,6 +156,43 @@ const tweetsCount_is_updated_in_UsersTable = async (id: string, newCount: number
     return resp.Item
 }
 
+const retweet_does_not_exist_in_TweetsTable = async (userId: any, tweetId: any) => {
+    const DynamoDB = new AWS.DynamoDB.DocumentClient()
+
+    console.log(`looking for retweet of [${tweetId}] in table [${process.env.TWEET_TABLE}]`)
+    const resp = await DynamoDB.query({
+        TableName: process.env.TWEET_TABLE,
+        IndexName: 'retweetsByCreator',
+        KeyConditionExpression: 'creator = :creator AND retweetOf = :tweetId',
+        ExpressionAttributeValues: {
+            ':creator': userId,
+            ':tweetId': tweetId
+        },
+        Limit: 1
+    }).promise()
+
+    expect(resp.Items).toHaveLength(0)
+
+    return null
+}
+
+const retweet_does_not_exist_in_RetweetsTable = async (userId:any, tweetId:any) => {
+    const DynamoDB = new AWS.DynamoDB.DocumentClient()
+
+    console.log(`looking for retweet of [${tweetId}] for user [${userId}] in table [${process.env.RETWEET_TABLE}]`)
+    const resp = await DynamoDB.get({
+        TableName: process.env.RETWEET_TABLE,
+        Key: {
+            userId,
+            tweetId
+        }
+    }).promise()
+
+    expect(resp.Item).not.toBeTruthy()
+
+    return resp.Item
+}
+
 module.exports = {
     user_exists_in_UserTable,
     user_can_upload_image_to_url,
@@ -166,4 +203,6 @@ module.exports = {
     tweet_exists_in_TimelinesTable,
     tweetsCount_is_updated_in_UsersTable,
     there_are_N_tweets_in_TimelinesTable,
+    retweet_does_not_exist_in_TweetsTable,
+    retweet_does_not_exist_in_RetweetsTable,
 }
