@@ -435,7 +435,7 @@ const a_user_calls_retweet = async (user: any, tweetId: any) => {
     return result
 }
 
-const we_invoke_unretweet = async (username:any, tweetId:any) => {
+const we_invoke_unretweet = async (username: any, tweetId: any) => {
     const handler = require('../../lib/lambda/appsync/unretweet').handler
 
     const context = {}
@@ -451,6 +451,21 @@ const we_invoke_unretweet = async (username:any, tweetId:any) => {
     return await handler(event, context)
 }
 
+const a_user_calls_unretweet = async (user:any, tweetId:any) => {
+    const unretweet = `mutation unretweet($tweetId: ID!) {
+      unretweet(tweetId: $tweetId)
+    }`
+    const variables = {
+        tweetId
+    }
+
+    const data = await GraphQL(process.env.GRAPHQL_API_URL, unretweet, variables, user.accessToken)
+    const result = data.unretweet
+
+    console.log(`[${user.username}] - unretweeted tweet [${tweetId}]`)
+
+    return result
+}
 
 module.exports = {
     we_invoke_confirmUserSignup,
@@ -470,6 +485,7 @@ module.exports = {
     a_user_calls_getLikes,
     a_user_calls_retweet,
     we_invoke_unretweet,
+    a_user_calls_unretweet,
 }
 
 export { }
