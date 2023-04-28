@@ -9,7 +9,8 @@ const VtlReplace = (templatepath, filepath, attributes) => {
     console.log("Before: " + str)
 
     attributes.forEach((value, key) => {
-        str = str.replace(key, value)
+        //str = str.replace(key, value)
+        str = str.split(key).join(value)
     });
 
     console.log("After: " + str)
@@ -37,3 +38,11 @@ VtlReplace(mutationLikeRequestTmpl, mutationLikeRequestFile, attributes)
 const mutationUnlikeRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.unlike.request_template.vtl')
 const mutationUnlikeRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.unlike.request.vtl')
 VtlReplace(mutationUnlikeRequestTmpl, mutationUnlikeRequestFile, attributes)
+
+const replyInReplyToUsersRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.request_template.vtl')
+const replyInReplyToUsersRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.request.vtl')
+VtlReplace(replyInReplyToUsersRequestTmpl, replyInReplyToUsersRequestFile, attributes)
+
+const replyInReplyToUsersResponseTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.response_template.vtl')
+const replyInReplyToUsersResponseFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.response.vtl')
+VtlReplace(replyInReplyToUsersResponseTmpl, replyInReplyToUsersResponseFile, attributes)

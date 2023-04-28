@@ -176,7 +176,7 @@ const retweet_does_not_exist_in_TweetsTable = async (userId: any, tweetId: any) 
     return null
 }
 
-const retweet_does_not_exist_in_RetweetsTable = async (userId:any, tweetId:any) => {
+const retweet_does_not_exist_in_RetweetsTable = async (userId: any, tweetId: any) => {
     const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
     console.log(`looking for retweet of [${tweetId}] for user [${userId}] in table [${process.env.RETWEET_TABLE}]`)
@@ -193,6 +193,28 @@ const retweet_does_not_exist_in_RetweetsTable = async (userId:any, tweetId:any) 
     return resp.Item
 }
 
+const reply_exists_in_TweetsTable = async (userId:any, tweetId:any) => {
+    const DynamoDB = new AWS.DynamoDB.DocumentClient()
+
+    console.log(`looking for reply by [${userId}] to [${tweetId}] in table [${process.env.TWEET_TABLE}]`)
+    const resp = await DynamoDB.query({
+        TableName: process.env.TWEET_TABLE,
+        IndexName: 'repliesForTweet',
+        KeyConditionExpression: 'inReplyToTweetId = :tweetId',
+        ExpressionAttributeValues: {
+            ':userId': userId,
+            ':tweetId': tweetId
+        },
+        FilterExpression: 'creator = :userId'
+    }).promise()
+
+    const reply = _.get(resp, 'Items.0')
+
+    expect(reply).toBeTruthy()
+
+    return reply
+}
+
 module.exports = {
     user_exists_in_UserTable,
     user_can_upload_image_to_url,
@@ -205,4 +227,5 @@ module.exports = {
     there_are_N_tweets_in_TimelinesTable,
     retweet_does_not_exist_in_TweetsTable,
     retweet_does_not_exist_in_RetweetsTable,
+    reply_exists_in_TweetsTable,
 }

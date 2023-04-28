@@ -203,7 +203,20 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Tweet.profile.response.vtl')
             ),
-        });        
+        });
+
+        // NestedReplyProfile
+        // ---------------------------------------------------------------
+        UserTableDs.createResolver('NestedReplyProfile', {
+            typeName: 'Reply',
+            fieldName: 'profile',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.profile.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.profile.response.vtl')
+            ),
+        }); 
 
         // NestedTimelineProfile
         // ---------------------------------------------------------------
@@ -244,6 +257,32 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // NestedReplyInReplyToTweet
+        // ---------------------------------------------------------------
+        TweetTableDs.createResolver('NestedReplyInReplyToTweet', {
+            typeName: 'Reply',
+            fieldName: 'inReplyToTweet',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.response.vtl')
+            ),
+        });
+
+        // NestedReplyInReplyToUsers
+        // ---------------------------------------------------------------
+        TweetTableDs.createResolver('NestedReplyInReplyToUsers', {
+            typeName: 'Reply',
+            fieldName: 'inReplyToUsers',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.response.vtl')
+            ),
+        });
+
         // NestedMyProfileTweets
         // ---------------------------------------------------------------
         TweetTableDs.createResolver('NestedMyProfileTweets', {
@@ -270,7 +309,7 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
-        // TweetRetweet
+        // NestedTweetRetweet
         // ---------------------------------------------------------------
         RetweetTableDs.createResolver('NestedTweetRetweeted', {
             typeName: 'Tweet',
@@ -343,7 +382,8 @@ export class AppsyncApiStack extends NestedStack {
         props.tweetTable.grantReadWriteData(retweetHandler);
         props.timelineTable.grantReadWriteData(retweetHandler);
         
-        
+        // RetweetHandler
+        // ---------------------------------------------------------------
         const unretweetHandler = new NodejsFunction(this, 'UnretweetHandler', {
             functionName: `${props.config.appName.toLowerCase()}-unretweet-${props.config.stage.toLowerCase()}`,
             description: 'Unretweet Handler',
@@ -363,12 +403,32 @@ export class AppsyncApiStack extends NestedStack {
         props.tweetTable.grantReadWriteData(unretweetHandler);
         props.timelineTable.grantReadWriteData(unretweetHandler);
 
+        // ReplyHandler
+        // ---------------------------------------------------------------
+        const replyHandler = new NodejsFunction(this, 'ReplyHandler', {
+            functionName: `${props.config.appName.toLowerCase()}-reply-${props.config.stage.toLowerCase()}`,
+            description: 'Reply Handler',
+            runtime: Runtime.NODEJS_14_X,
+            entry: path.join(__dirname, `../lambda/appsync/reply.ts`),
+            handler: "handler",
+            environment: {
+                USER_TABLE: props.userTable.tableName,
+                TWEET_TABLE: props.tweetTable.tableName,
+                TIMELINE_TABLE: props.timelineTable.tableName,
+            },
+        });
+
+        props.userTable.grantReadWriteData(replyHandler);
+        props.tweetTable.grantReadWriteData(replyHandler);
+        props.timelineTable.grantReadWriteData(replyHandler);
+
         // ---------------------------------------------------------------
         // CREATE LAMBDA RESOLVER DATASOURCES
         // ---------------------------------------------------------------
         const TweetDs = api.addLambdaDataSource('TweetDs', tweetHandler);
         const RetweetDs = api.addLambdaDataSource('RetweetDs', retweetHandler);
         const UnretweetDs = api.addLambdaDataSource('UnretweetDs', unretweetHandler);
+        const ReplyDs = api.addLambdaDataSource('ReplyDs', replyHandler);
         const ProfileImageUploadUrlDs = api.addLambdaDataSource('ProfileImageUploadUrlDs', profileImageUploadUrlHandler);
 
         // ---------------------------------------------------------------
@@ -393,6 +453,11 @@ export class AppsyncApiStack extends NestedStack {
         UnretweetDs.createResolver('Unretweet', {
             typeName: 'Mutation',
             fieldName: 'unretweet',
+        });
+
+        ReplyDs.createResolver('Reply', {
+            typeName: 'Mutation',
+            fieldName: 'reply',
         });
     }
 }

@@ -451,7 +451,7 @@ const we_invoke_unretweet = async (username: any, tweetId: any) => {
     return await handler(event, context)
 }
 
-const a_user_calls_unretweet = async (user:any, tweetId:any) => {
+const a_user_calls_unretweet = async (user: any, tweetId: any) => {
     const unretweet = `mutation unretweet($tweetId: ID!) {
       unretweet(tweetId: $tweetId)
     }`
@@ -465,6 +465,23 @@ const a_user_calls_unretweet = async (user:any, tweetId:any) => {
     console.log(`[${user.username}] - unretweeted tweet [${tweetId}]`)
 
     return result
+}
+
+const we_invoke_reply = async (username:any, tweetId:any, text:any) => {
+    const handler = require('../../lib/lambda/appsync/reply').handler
+
+    const context = {}
+    const event = {
+        identity: {
+            username
+        },
+        arguments: {
+            tweetId,
+            text
+        }
+    }
+
+    return await handler(event, context)
 }
 
 module.exports = {
@@ -486,6 +503,7 @@ module.exports = {
     a_user_calls_retweet,
     we_invoke_unretweet,
     a_user_calls_unretweet,
+    we_invoke_reply,
 }
 
 export { }

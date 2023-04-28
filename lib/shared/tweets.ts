@@ -46,14 +46,6 @@ const extractMentions = (text: string) => {
     return Array.from(mentions)
 }
 
-/*
-module.exports = {
-    getTweetById,
-    extractHashTags,
-    extractMentions
-}
-*/
-
 export {
     getTweetById,
     extractHashTags,

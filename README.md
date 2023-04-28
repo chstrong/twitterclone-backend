@@ -135,6 +135,8 @@ npx jest Foo.test.js
 
 - TypeError: Cannot read properties of undefined (reading '0'): DynamoD V3 query might be missing S:
 
+- ValidationException: Cannot read from backfilling global secondary index: repliesForTweet: Not sure yet
+
 ## Tips
 
 - When testing queries in the console and they fail, there is a small LOGS checkbox below the output field. Enable this, run the query and you can then jump to the Cloudwatch logs by clicking on the link.
