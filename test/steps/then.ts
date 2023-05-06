@@ -52,8 +52,6 @@ const user_can_download_image_from = async (url: string) => {
 
         console.log('downloaded image from', url)
 
-        console.log(resp.data)
-
         return resp.data
     } catch(err:any) {
         console.log(err)
