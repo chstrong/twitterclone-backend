@@ -249,6 +249,7 @@ const a_user_calls_getImageUploadUrl = async (user: any, extension: string, cont
     const getImageUploadUrl = `query getImageUploadUrl($extension: String, $contentType: String) {
         getImageUploadUrl(extension: $extension, contentType: $contentType)
       }`
+
     const variables = {
         extension,
         contentType
@@ -257,7 +258,7 @@ const a_user_calls_getImageUploadUrl = async (user: any, extension: string, cont
     const data = await GraphQL(process.env.GRAPHQL_API_URL, getImageUploadUrl, variables, user.accessToken)
     const url = data.getImageUploadUrl
 
-    console.log(`[${user.username}] - got image upload url`)
+    console.log(`[${user.username}] - got image upload url: ${url}`)
 
     return url
 }

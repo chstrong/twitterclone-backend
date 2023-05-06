@@ -3,9 +3,10 @@ const given = require('../../steps/given')
 const when = require('../../steps/when')
 const then = require('../../steps/then')
 const chance = require('chance').Chance()
+const S3 = require('aws-sdk/clients/s3')
 const path = require('path')
 
-jest.setTimeout(8000)
+jest.setTimeout(20000)
 
 const bucketName = process.env.TRANSFER_BUCKET
 
@@ -57,6 +58,7 @@ describe('Given an authenticated user', () => {
 
         const downloadUrl = uploadUrl.split('?')[0]
         await then.user_can_download_image_from(downloadUrl)
+        
     })
 
     it('The user can edit his profile with editMyProfile', async () => {

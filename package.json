@@ -14,7 +14,7 @@
     "build-env": "node ./scripts/cdkenv2dotenv.js",
     "replace-vtl": "node ./scripts/vtlreplace.js",
     "integration-test": "jest --verbose ./test/cases/integration",
-    "e2e-test": "jest --verbose ./test/cases/e2e",
+    "e2e-test": "jest --detectOpenHandles --verbose ./test/cases/e2e",
     "unit-test": "jest --verbose ./test/cases/unit"
   },
   "devDependencies": {

@@ -18,11 +18,29 @@ const VtlReplace = (templatepath, filepath, attributes) => {
     fs.writeFileSync(filepath,str,{encoding:'utf8',flag:'w'})
 }
 
+const dirPath = "../lib/graphql/mapping-templates/"
+
 const attributes = new Map()
 attributes.set("{TWEET_TABLE}", process.env.TWEET_TABLE)
 attributes.set("{LIKE_TABLE}", process.env.LIKE_TABLE)
 attributes.set("{USER_TABLE}", process.env.USER_TABLE)
 
+const tmplFiles = [
+    "UnhydratedTweetsPage.tweets.request",
+    "UnhydratedTweetsPage.tweets.response",
+    "Mutation.like.request",
+    "Mutation.unlike.request",
+    "Reply.inReplyToUsers.request",
+    "Reply.inReplyToUsers.response",
+]
+
+tmplFiles.forEach(function(tmplfile) {
+    const tmpl = path.resolve(__dirname, dirPath + tmplfile + "_template.vtl")
+    const file = path.resolve(__dirname, dirPath + tmplfile + ".vtl")
+    VtlReplace(tmpl, file, attributes)
+})
+
+/*
 const unhydratedTweetsPageTweetsRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/UnhydratedTweetsPage.tweets.request_template.vtl')
 const unhydratedTweetsPageTweetsRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/UnhydratedTweetsPage.tweets.request.vtl')
 VtlReplace(unhydratedTweetsPageTweetsRequestTmpl, unhydratedTweetsPageTweetsRequestFile, attributes)
@@ -46,3 +64,4 @@ VtlReplace(replyInReplyToUsersRequestTmpl, replyInReplyToUsersRequestFile, attri
 const replyInReplyToUsersResponseTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.response_template.vtl')
 const replyInReplyToUsersResponseFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.response.vtl')
 VtlReplace(replyInReplyToUsersResponseTmpl, replyInReplyToUsersResponseFile, attributes)
+*/

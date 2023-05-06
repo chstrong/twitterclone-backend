@@ -32,9 +32,9 @@ async function create(event: any) {
     const params = {
       Bucket: bucketName,
       Key: key,
-      ACL: 'public-read',
       ContentType: contentType
     }
+    
     const signedUrl = s3.getSignedUrl('putObject', params) // or getPresignedPostUrl for more params
     return signedUrl
 }

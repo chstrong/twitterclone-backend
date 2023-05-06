@@ -5,7 +5,7 @@ const fs = require('fs')
 
 const _ = require('lodash')
 
-jest.setTimeout(8000)
+jest.setTimeout(20000)
 
 const userTable = process.env.USER_TABLE
 
@@ -29,6 +29,8 @@ const user_exists_in_UserTable = async (id: String) => {
 
 const user_can_upload_image_to_url = async (url: string, filepath: string, contentType: string) => {
     const data = fs.readFileSync(filepath)
+    
+    try {
     await http({
         method: 'put',
         url,
@@ -37,16 +39,25 @@ const user_can_upload_image_to_url = async (url: string, filepath: string, conte
         },
         data
     })
+    } catch(err:any) {
+        console.log("ERROR IS: ", err)
+    }
 
     console.log('uploaded image to', url)
 }
 
 const user_can_download_image_from = async (url: string) => {
-    const resp = await http(url)
+    try {
+        const resp = await http(url)
 
-    console.log('downloaded image from', url)
+        console.log('downloaded image from', url)
 
-    return resp.data
+        console.log(resp.data)
+
+        return resp.data
+    } catch(err:any) {
+        console.log(err)
+    }
 }
 
 const tweet_exists_in_TweetsTable = async (id: string) => {

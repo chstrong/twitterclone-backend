@@ -137,6 +137,10 @@ npx jest Foo.test.js
 
 - ValidationException: Cannot read from backfilling global secondary index: repliesForTweet: Not sure yet
 
+- SignatureDoesNotMatch: Might need to re-generate account access keys, or specify signature version.
+
+- '<Error><Code>AccessControlListNotSupported</Code><Message>The bucket does not allow ACLs</Message><RequestId>K9QAVHM8MMPMKY0J</RequestId><HostId>MK3GPl4C1La3qvZ0IJ6gPh7aEfCqma00xma8LLPXFZsxRp2bVfsKwMD8poQcP1c+U7fRjP01AGE=</HostId></Error>'
+
 ## Tips
 
 - When testing queries in the console and they fail, there is a small LOGS checkbox below the output field. Enable this, run the query and you can then jump to the Cloudwatch logs by clicking on the link.
