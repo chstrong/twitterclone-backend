@@ -244,6 +244,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // NestedReplyLiked
+        // ---------------------------------------------------------------
+        LikeTableDs.createResolver('NestedReplyLiked', {
+            typeName: 'Reply',
+            fieldName: 'liked',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.liked.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.liked.response.vtl')
+            ),
+        });        
+
         // NestedRetweetOf
         // ---------------------------------------------------------------
         TweetTableDs.createResolver('NestedRetweetOf', {
@@ -263,10 +276,10 @@ export class AppsyncApiStack extends NestedStack {
             typeName: 'Reply',
             fieldName: 'inReplyToTweet',
             requestMappingTemplate: MappingTemplate.fromFile(
-                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.request.vtl')
+                path.join(__dirname, '../graphql/mapping-templates/Reply.inReplyToTweet.request.vtl')
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
-                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.response.vtl')
+                path.join(__dirname, '../graphql/mapping-templates/Reply.inReplyToTweet.response.vtl')
             ),
         });
 
@@ -276,12 +289,14 @@ export class AppsyncApiStack extends NestedStack {
             typeName: 'Reply',
             fieldName: 'inReplyToUsers',
             requestMappingTemplate: MappingTemplate.fromFile(
-                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.request.vtl')
+                path.join(__dirname, '../graphql/mapping-templates/Reply.inReplyToUsers.request.vtl')
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
-                path.join(__dirname, '../graphql/mapping-templates/Retweet.retweetOf.response.vtl')
+                path.join(__dirname, '../graphql/mapping-templates/Reply.inReplyToUsers.response.vtl')
             ),
         });
+
+        TweetTableDs.ds.serviceRoleArn = role.roleArn
 
         // NestedMyProfileTweets
         // ---------------------------------------------------------------
@@ -321,6 +336,19 @@ export class AppsyncApiStack extends NestedStack {
                 path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.response.vtl')
             ),
         });
+
+        // NestedReplyRetweet
+        // ---------------------------------------------------------------
+        RetweetTableDs.createResolver('NestedReplyRetweeted', {
+            typeName: 'Reply',
+            fieldName: 'retweeted',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.response.vtl')
+            ),
+        });        
 
         // ---------------------------------------------------------------
         // LAMBDA FUNCTIONS

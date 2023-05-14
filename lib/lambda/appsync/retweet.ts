@@ -1,5 +1,6 @@
 import { Handler } from 'aws-lambda'
 import { DynamoDBClient, TransactWriteItemsCommand, GetItemCommand } from "@aws-sdk/client-dynamodb";
+import { unmarshall } from '@aws-sdk/util-dynamodb';
 const ulid = require('ulid')
 const { TweetTypes } = require('../../shared/constants')
 
@@ -129,5 +130,6 @@ async function create(event: any) {
         console.error(error);
     }
 
-    return true
+    // Remove the "S:" types, turn from DynamoDB object to plain Javascript object
+    return unmarshall(newTweet)
 }
