@@ -14,6 +14,7 @@ const VtlReplace = (templatepath, filepath, attributes) => {
     });
 
     console.log("After: " + str)
+    console.log("Writting to:", filepath)
 
     fs.writeFileSync(filepath,str,{encoding:'utf8',flag:'w'})
 }
@@ -24,12 +25,14 @@ const attributes = new Map()
 attributes.set("{TWEET_TABLE}", process.env.TWEET_TABLE)
 attributes.set("{LIKE_TABLE}", process.env.LIKE_TABLE)
 attributes.set("{USER_TABLE}", process.env.USER_TABLE)
+attributes.set("{RELATIONSHIP_TABLE}", process.env.RELATIONSHIP_TABLE)
 
 const tmplFiles = [
     "UnhydratedTweetsPage.tweets.request",
     "UnhydratedTweetsPage.tweets.response",
     "Mutation.like.request",
     "Mutation.unlike.request",
+    "Mutation.follow.request",
     "Reply.inReplyToUsers.request",
     "Reply.inReplyToUsers.response",
 ]

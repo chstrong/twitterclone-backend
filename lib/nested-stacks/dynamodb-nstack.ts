@@ -13,6 +13,7 @@ export class DynamoDbTableStack extends NestedStack {
     public readonly timelineTable: Table
     public readonly likeTable: Table
     public readonly retweetTable: Table
+    public readonly relationshipTable: Table
 
     constructor(scope: Construct, id: string, props: DynamoDbTableStackProps) {
         super(scope, id, props)
@@ -125,5 +126,29 @@ export class DynamoDbTableStack extends NestedStack {
         Tags.of(likeTable).add('Application', `${props.config.appName}`)
 
         this.retweetTable = retweetTable
+
+        // RELATIONSHIP TABLE
+        const relationshipTableName = `${props.config.appName.toLowerCase()}-relationship-${props.config.stage.toLowerCase()}`
+        const relationshipTable = new Table(this, 'Relationship', {
+            tableName: relationshipTableName,
+            removalPolicy: RemovalPolicy.DESTROY,
+            billingMode: BillingMode.PAY_PER_REQUEST,
+            partitionKey: { name: 'userId', type: AttributeType.STRING },
+            sortKey: { name: 'sk', type: AttributeType.STRING },
+        })
+
+        relationshipTable.addGlobalSecondaryIndex({
+            indexName: `byOtherUser`,
+            partitionKey: { name: 'otherUserId', type: AttributeType.STRING },
+            sortKey: { name: 'sk', type: AttributeType.STRING },
+            projectionType: ProjectionType.ALL,
+        })
+
+        // Define tags to be able to filter for billing
+        Tags.of(relationshipTable).add('Environment', `${props.config.stage}`);
+        Tags.of(relationshipTable).add('TableName', relationshipTableName);
+        Tags.of(relationshipTable).add('Application', `${props.config.appName}`)
+
+        this.relationshipTable = relationshipTable
     }
 }

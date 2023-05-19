@@ -24,6 +24,7 @@ interface AppsyncApiStackProps extends StackProps {
     timelineTable: Table,
     likeTable: Table,
     retweetTable: Table,
+    relationshipTable: Table,
     transferAssetsBucket: Bucket
 }
 
@@ -66,6 +67,24 @@ export class AppsyncApiStack extends NestedStack {
         const TimelineTableDs = api.addDynamoDbDataSource('TimelineTableDs', props.timelineTable);
         const LikeTableDs = api.addDynamoDbDataSource('LikeTableDs', props.likeTable);
         const RetweetTableDs = api.addDynamoDbDataSource('RetweetTableDs', props.retweetTable);
+        const RelationshipTableDs = api.addDynamoDbDataSource('RelationshipTableDs', props.relationshipTable);
+
+        // ---------------------------------------------------------------
+        // CREATE DYNAMODB ACCESS WRITES FOR TRANSACTIONS & BATCHES
+        // ---------------------------------------------------------------
+        // Create the IAM role for the DynamoDB data source
+        const role = new iam.Role(this, 'MyDataSourceRole', {
+            assumedBy: new iam.ServicePrincipal('appsync.amazonaws.com'),
+        });
+
+        // Allow the role to access all three DynamoDB tables
+        props.likeTable.grantReadWriteData(role);
+        props.tweetTable.grantReadWriteData(role);
+        props.userTable.grantReadWriteData(role);
+        props.relationshipTable.grantReadWriteData(role);
+
+        LikeTableDs.ds.serviceRoleArn = role.roleArn
+        RelationshipTableDs.ds.serviceRoleArn = role.roleArn
 
         // ---------------------------------------------------------------
         // CREATE DYNAMODB RESOLVERS
@@ -139,18 +158,6 @@ export class AppsyncApiStack extends NestedStack {
         // LikeMutation
         // ---------------------------------------------------------------
 
-        // Create the IAM role for the DynamoDB data source
-        const role = new iam.Role(this, 'MyDataSourceRole', {
-            assumedBy: new iam.ServicePrincipal('appsync.amazonaws.com'),
-        });
-
-        // Allow the role to access all three DynamoDB tables
-        props.likeTable.grantReadWriteData(role);
-        props.tweetTable.grantReadWriteData(role);
-        props.userTable.grantReadWriteData(role);
-
-        LikeTableDs.ds.serviceRoleArn = role.roleArn
-
         // Like Mutation
         LikeTableDs.createResolver('LikeMutation', {
             typeName: 'Mutation',
@@ -174,6 +181,18 @@ export class AppsyncApiStack extends NestedStack {
                 path.join(__dirname, '../graphql/mapping-templates/Mutation.unlike.response.vtl')
             ),
         });        
+
+        // Unlike Mutation
+        RelationshipTableDs.createResolver('FollowMutation', {
+            typeName: 'Mutation',
+            fieldName: 'follow',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Mutation.follow.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Mutation.follow.response.vtl')
+            ),
+        });  
 
         // ---------------------------------------------------------------
         // NESTED FIELD RESOLVERS

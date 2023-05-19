@@ -48,6 +48,7 @@ export class TwitterAppStack extends Stack {
             timelineTable: dynamodbTableStack.timelineTable,
             likeTable: dynamodbTableStack.likeTable,
             retweetTable: dynamodbTableStack.retweetTable,
+            relationshipTable: dynamodbTableStack.relationshipTable,
             transferAssetsBucket: s3BucketStack.transferAssetsBucket,
         })
 
@@ -90,6 +91,10 @@ export class TwitterAppStack extends Stack {
 
         new CfnOutput(this, 'RetweetTableName', {
             value: dynamodbTableStack.retweetTable.tableName,
+        })
+
+        new CfnOutput(this, 'RelationshipTableName', {
+            value: dynamodbTableStack.relationshipTable.tableName,
         })
 
         new CfnOutput(this, 'UserPoolId', {
