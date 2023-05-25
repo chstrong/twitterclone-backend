@@ -103,6 +103,19 @@ export class AppsyncApiStack extends NestedStack {
             ),
         });
 
+        // GetProfile
+        // ---------------------------------------------------------------
+        UserTableDs.createResolver('GetProfile', {
+            typeName: 'Query',
+            fieldName: 'getProfile',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Query.getProfile.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Query.getProfile.response.vtl')
+            ),
+        });        
+
         // EditMyProfile
         // ---------------------------------------------------------------
         UserTableDs.createResolver('EditMyProfile', {
@@ -366,6 +379,32 @@ export class AppsyncApiStack extends NestedStack {
             ),
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.response.vtl')
+            ),
+        });
+        
+        // NestedOtherProfileFollowing
+        // ---------------------------------------------------------------
+        RelationshipTableDs.createResolver('NestedOtherProfileFollowing', {
+            typeName: 'OtherProfile',
+            fieldName: 'following',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/OtherProfile.following.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/OtherProfile.following.response.vtl')
+            ),
+        });
+
+        // NestedOtherProfileFollowedBy
+        // ---------------------------------------------------------------
+        RelationshipTableDs.createResolver('NestedOtherProfileFollowedBy', {
+            typeName: 'OtherProfile',
+            fieldName: 'followedBy',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/OtherProfile.followedBy.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/OtherProfile.followedBy.response.vtl')
             ),
         });        
 

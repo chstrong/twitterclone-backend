@@ -32,6 +32,12 @@ export class DynamoDbTableStack extends NestedStack {
         Tags.of(userTable).add('TableName', userTableName);
         Tags.of(userTable).add('Application', `${props.config.appName}`)
 
+        userTable.addGlobalSecondaryIndex({
+            indexName: `byScreenName`,
+            partitionKey: { name: 'screenName', type: AttributeType.STRING },
+            projectionType: ProjectionType.ALL,
+        })
+
         this.userTable = userTable
 
 
@@ -42,7 +48,6 @@ export class DynamoDbTableStack extends NestedStack {
             removalPolicy: RemovalPolicy.DESTROY,
             billingMode: BillingMode.PAY_PER_REQUEST,
             partitionKey: { name: 'id', type: AttributeType.STRING },
-            //sortKey: { name: 'creator', type: AttributeType.STRING },
         })
 
         tweetTable.addGlobalSecondaryIndex({
