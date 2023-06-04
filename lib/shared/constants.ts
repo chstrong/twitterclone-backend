@@ -18,15 +18,6 @@ const DynamoDB = {
     MAX_BATCH_SIZE: 25
 }
 
-/*
-module.exports = {
-    TweetTypes,
-    DynamoDB,
-    SearchModes,
-    HashTagModes
-}
-*/
-
 export {
     TweetTypes,
     DynamoDB,

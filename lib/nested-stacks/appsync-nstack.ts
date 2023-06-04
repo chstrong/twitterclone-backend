@@ -13,8 +13,10 @@ import { Config } from '../shared/stack-helper';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { Runtime } from 'aws-cdk-lib/aws-lambda';
+import { Runtime, StartingPosition } from 'aws-cdk-lib/aws-lambda';
+import { LambdaDestination } from 'aws-cdk-lib/aws-lambda-destinations';
 import * as iam from 'aws-cdk-lib/aws-iam';
+import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
 
 interface AppsyncApiStackProps extends StackProps {
     config: Config,
@@ -507,6 +509,28 @@ export class AppsyncApiStack extends NestedStack {
         props.userTable.grantReadWriteData(replyHandler);
         props.tweetTable.grantReadWriteData(replyHandler);
         props.timelineTable.grantReadWriteData(replyHandler);
+
+        // DistributeTweetsHandler
+        // ---------------------------------------------------------------
+        const distributeTweetsHandlder = new NodejsFunction(this, 'DistributeTweetsHandler', {
+            functionName: `${props.config.appName.toLowerCase()}-distribute-tweets-${props.config.stage.toLowerCase()}`,
+            description: 'Distribute Tweets Handler',
+            runtime: Runtime.NODEJS_14_X,
+            entry: path.join(__dirname, `../lambda/appsync/distribute-tweets.ts`),
+            handler: "handler",
+            environment: {
+                TIMELINE_TABLE: props.timelineTable.tableName,
+                RELATIONSHIP_TABLE: props.relationshipTable.tableName,
+            },
+        });
+
+        distributeTweetsHandlder.addEventSource(new DynamoEventSource(props.tweetTable, {
+            startingPosition: StartingPosition.LATEST,
+        }))
+
+        props.timelineTable.grantReadData(distributeTweetsHandlder);
+        props.relationshipTable.grantReadData(distributeTweetsHandlder);
+        props.tweetTable.grantStream(distributeTweetsHandlder);
 
         // ---------------------------------------------------------------
         // CREATE LAMBDA RESOLVER DATASOURCES

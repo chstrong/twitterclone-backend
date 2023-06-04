@@ -592,6 +592,13 @@ const a_user_calls_getProfile = async (user:any, screenName:any) => {
   return profile
 }
 
+const we_invoke_distributeTweets = async (event:any) => {
+  const handler = require('../../lib/lambda/appsync/distribute-tweets').handler
+
+  const context = {}
+  return await handler(event, context)
+}
+
 module.exports = {
   we_invoke_confirmUserSignup,
   a_user_signs_up,
@@ -615,6 +622,7 @@ module.exports = {
   a_user_calls_reply,
   a_user_calls_follow,
   a_user_calls_getProfile,
+  we_invoke_distributeTweets,
 }
 
 export { }

@@ -8,6 +8,7 @@ const _ = require('lodash')
 jest.setTimeout(20000)
 
 const userTable = process.env.USER_TABLE
+const timelineTable = process.env.TIMELINE_TABLE
 
 const user_exists_in_UserTable = async (id: String) => {
     const DynamoDB = new AWS.DynamoDB.DocumentClient()
@@ -29,17 +30,17 @@ const user_exists_in_UserTable = async (id: String) => {
 
 const user_can_upload_image_to_url = async (url: string, filepath: string, contentType: string) => {
     const data = fs.readFileSync(filepath)
-    
+
     try {
-    await http({
-        method: 'put',
-        url,
-        headers: {
-            'Content-Type': contentType
-        },
-        data
-    })
-    } catch(err:any) {
+        await http({
+            method: 'put',
+            url,
+            headers: {
+                'Content-Type': contentType
+            },
+            data
+        })
+    } catch (err: any) {
         console.log("ERROR IS: ", err)
     }
 
@@ -53,7 +54,7 @@ const user_can_download_image_from = async (url: string) => {
         console.log('downloaded image from', url)
 
         return resp.data
-    } catch(err:any) {
+    } catch (err: any) {
         console.log(err)
     }
 }
@@ -118,7 +119,7 @@ const there_are_N_tweets_in_TimelinesTable = async (userId: any, n: any) => {
 
     console.log(`looking for [${n}] tweets for user [${userId}] in table [${process.env.TIMELINE_TABLE}]`)
     const resp = await DynamoDB.query({
-        TableName: process.env.TIMELINE_TABLE,
+        TableName: timelineTable,
         KeyConditionExpression: 'userId = :userId',
         ExpressionAttributeValues: {
             ':userId': userId
@@ -136,7 +137,7 @@ const tweet_exists_in_TimelinesTable = async (userId: string, tweetId: string) =
 
     console.log(`looking for tweet [${tweetId}] for user [${userId}] in table [${process.env.TIMELINE_TABLE}]`)
     const resp = await DynamoDB.get({
-        TableName: process.env.TIMELINE_TABLE,
+        TableName: timelineTable,
         Key: {
             userId,
             tweetId
@@ -144,6 +145,23 @@ const tweet_exists_in_TimelinesTable = async (userId: string, tweetId: string) =
     }).promise()
 
     expect(resp.Item).toBeTruthy()
+
+    return resp.Item
+}
+
+const tweet_does_not_exist_in_TimelinesTable = async (userId: any, tweetId: any) => {
+    const DynamoDB = new AWS.DynamoDB.DocumentClient()
+
+    console.log(`looking for tweet [${tweetId}] for user [${userId}] in table [${timelineTable}]`)
+    const resp = await DynamoDB.get({
+        TableName: timelineTable,
+        Key: {
+            userId,
+            tweetId
+        }
+    }).promise()
+
+    expect(resp.Item).not.toBeTruthy()
 
     return resp.Item
 }
@@ -202,7 +220,7 @@ const retweet_does_not_exist_in_RetweetsTable = async (userId: any, tweetId: any
     return resp.Item
 }
 
-const reply_exists_in_TweetsTable = async (userId:any, tweetId:any) => {
+const reply_exists_in_TweetsTable = async (userId: any, tweetId: any) => {
     const DynamoDB = new AWS.DynamoDB.DocumentClient()
 
     console.log(`looking for reply by [${userId}] to [${tweetId}] in table [${process.env.TWEET_TABLE}]`)
@@ -232,6 +250,7 @@ module.exports = {
     retweet_exists_in_TweetsTable,
     retweet_exists_in_RetweetsTable,
     tweet_exists_in_TimelinesTable,
+    tweet_does_not_exist_in_TimelinesTable,
     tweetsCount_is_updated_in_UsersTable,
     there_are_N_tweets_in_TimelinesTable,
     retweet_does_not_exist_in_TweetsTable,

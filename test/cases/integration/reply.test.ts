@@ -108,3 +108,5 @@ describe('Given two authenticated users, user A and user B', () => {
     })
   })
 })
+
+export {}

@@ -1,5 +1,5 @@
 import { NestedStack, RemovalPolicy, StackProps, Tags } from 'aws-cdk-lib'
-import { AttributeType, ProjectionType, BillingMode, Table } from 'aws-cdk-lib/aws-dynamodb'
+import { AttributeType, ProjectionType, BillingMode, Table, StreamViewType } from 'aws-cdk-lib/aws-dynamodb'
 import { Construct } from 'constructs';
 import { Config } from '../shared/stack-helper';
 
@@ -48,6 +48,7 @@ export class DynamoDbTableStack extends NestedStack {
             removalPolicy: RemovalPolicy.DESTROY,
             billingMode: BillingMode.PAY_PER_REQUEST,
             partitionKey: { name: 'id', type: AttributeType.STRING },
+            stream: StreamViewType.NEW_AND_OLD_IMAGES,
         })
 
         tweetTable.addGlobalSecondaryIndex({
