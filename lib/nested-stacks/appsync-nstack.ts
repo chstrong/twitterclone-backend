@@ -13,7 +13,7 @@ import { Config } from '../shared/stack-helper';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Bucket } from 'aws-cdk-lib/aws-s3';
-import { Runtime, StartingPosition } from 'aws-cdk-lib/aws-lambda';
+import { EventSourceMapping, Runtime, StartingPosition } from 'aws-cdk-lib/aws-lambda';
 import { LambdaDestination } from 'aws-cdk-lib/aws-lambda-destinations';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { DynamoEventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
@@ -518,19 +518,27 @@ export class AppsyncApiStack extends NestedStack {
             runtime: Runtime.NODEJS_14_X,
             entry: path.join(__dirname, `../lambda/appsync/distribute-tweets.ts`),
             handler: "handler",
+            /*
+            events: [new DynamoEventSource(props.tweetTable, {
+                startingPosition: StartingPosition.TRIM_HORIZON,
+                batchSize: 1,
+            })],
+            */
             environment: {
                 TIMELINE_TABLE: props.timelineTable.tableName,
                 RELATIONSHIP_TABLE: props.relationshipTable.tableName,
             },
         });
 
+        
         distributeTweetsHandlder.addEventSource(new DynamoEventSource(props.tweetTable, {
             startingPosition: StartingPosition.LATEST,
         }))
 
-        props.timelineTable.grantReadData(distributeTweetsHandlder);
-        props.relationshipTable.grantReadData(distributeTweetsHandlder);
-        props.tweetTable.grantStream(distributeTweetsHandlder);
+        props.timelineTable.grantReadWriteData(distributeTweetsHandlder);
+        props.relationshipTable.grantReadWriteData(distributeTweetsHandlder);
+        props.tweetTable.grantStreamRead(distributeTweetsHandlder);
+        props.tweetTable.grantReadWriteData(distributeTweetsHandlder);
 
         // ---------------------------------------------------------------
         // CREATE LAMBDA RESOLVER DATASOURCES
