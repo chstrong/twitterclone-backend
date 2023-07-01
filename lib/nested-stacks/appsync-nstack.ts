@@ -512,18 +512,12 @@ export class AppsyncApiStack extends NestedStack {
 
         // DistributeTweetsHandler
         // ---------------------------------------------------------------
-        const distributeTweetsHandlder = new NodejsFunction(this, 'DistributeTweetsHandler', {
+        const distributeTweetsHandler = new NodejsFunction(this, 'DistributeTweetsHandler', {
             functionName: `${props.config.appName.toLowerCase()}-distribute-tweets-${props.config.stage.toLowerCase()}`,
             description: 'Distribute Tweets Handler',
             runtime: Runtime.NODEJS_14_X,
             entry: path.join(__dirname, `../lambda/appsync/distribute-tweets.ts`),
             handler: "handler",
-            /*
-            events: [new DynamoEventSource(props.tweetTable, {
-                startingPosition: StartingPosition.TRIM_HORIZON,
-                batchSize: 1,
-            })],
-            */
             environment: {
                 TIMELINE_TABLE: props.timelineTable.tableName,
                 RELATIONSHIP_TABLE: props.relationshipTable.tableName,
@@ -531,14 +525,38 @@ export class AppsyncApiStack extends NestedStack {
         });
 
         
-        distributeTweetsHandlder.addEventSource(new DynamoEventSource(props.tweetTable, {
+        distributeTweetsHandler.addEventSource(new DynamoEventSource(props.tweetTable, {
             startingPosition: StartingPosition.LATEST,
         }))
 
-        props.timelineTable.grantReadWriteData(distributeTweetsHandlder);
-        props.relationshipTable.grantReadWriteData(distributeTweetsHandlder);
-        props.tweetTable.grantStreamRead(distributeTweetsHandlder);
-        props.tweetTable.grantReadWriteData(distributeTweetsHandlder);
+        props.timelineTable.grantReadWriteData(distributeTweetsHandler);
+        props.relationshipTable.grantReadWriteData(distributeTweetsHandler);
+        props.tweetTable.grantStreamRead(distributeTweetsHandler);
+        props.tweetTable.grantReadWriteData(distributeTweetsHandler);
+
+        // DistributeTweetsToFollowerHandler
+        // ---------------------------------------------------------------
+        const distributeTweetsToFollowerHandler = new NodejsFunction(this, 'DistributeTweetsToFolloswerHandler', {
+            functionName: `${props.config.appName.toLowerCase()}-distribute-tweets-to-follower-${props.config.stage.toLowerCase()}`,
+            description: 'Distribute Tweets To Follower Handler',
+            runtime: Runtime.NODEJS_14_X,
+            entry: path.join(__dirname, `../lambda/appsync/distribute-tweets-to-follower.ts`),
+            handler: "handler",
+            environment: {
+                TWEET_TABLE: props.tweetTable.tableName,
+                RELATIONSHIP_TABLE: props.relationshipTable.tableName,
+                MAX_TWEETS: "100",
+            },
+        });
+
+        distributeTweetsToFollowerHandler.addEventSource(new DynamoEventSource(props.relationshipTable, {
+            startingPosition: StartingPosition.LATEST,
+        }))
+
+        props.timelineTable.grantReadWriteData(distributeTweetsToFollowerHandler);
+        props.relationshipTable.grantReadWriteData(distributeTweetsToFollowerHandler);
+        props.relationshipTable.grantStreamRead(distributeTweetsToFollowerHandler);
+        props.tweetTable.grantReadWriteData(distributeTweetsToFollowerHandler);
 
         // ---------------------------------------------------------------
         // CREATE LAMBDA RESOLVER DATASOURCES

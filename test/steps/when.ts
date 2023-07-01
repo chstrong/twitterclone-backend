@@ -551,7 +551,7 @@ const a_user_calls_reply = async (user: any, tweetId: any, text: any) => {
   return result
 }
 
-const a_user_calls_follow = async (user:any, userId:any) => {
+const a_user_calls_follow = async (user: any, userId: any) => {
   const follow = `mutation follow($userId: ID!) {
     follow(userId: $userId)
   }`
@@ -567,7 +567,7 @@ const a_user_calls_follow = async (user:any, userId:any) => {
   return result
 }
 
-const a_user_calls_getProfile = async (user:any, screenName:any) => {
+const a_user_calls_getProfile = async (user: any, screenName: any) => {
   const getProfile = `query getProfile($screenName: String!) {
     getProfile(screenName: $screenName) {
       ... otherProfileFields
@@ -592,8 +592,15 @@ const a_user_calls_getProfile = async (user:any, screenName:any) => {
   return profile
 }
 
-const we_invoke_distributeTweets = async (event:any) => {
+const we_invoke_distributeTweets = async (event: any) => {
   const handler = require('../../lib/lambda/appsync/distribute-tweets').handler
+
+  const context = {}
+  return await handler(event, context)
+}
+
+const we_invoke_distributeTweetsToFollower = async (event:any) => {
+  const handler = require('../../lib/lambda/appsync/distribute-tweets-to-follower').handler
 
   const context = {}
   return await handler(event, context)
@@ -623,6 +630,7 @@ module.exports = {
   a_user_calls_follow,
   a_user_calls_getProfile,
   we_invoke_distributeTweets,
+  we_invoke_distributeTweetsToFollower,
 }
 
 export { }

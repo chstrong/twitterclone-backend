@@ -59,6 +59,7 @@ async function distribute(tweet: any, followers: any) {
                 userId,
                 tweetId: tweet.id,
                 timestamp: tweet.createdAt,
+                distributedFrom: tweet.creator,
                 retweetOf: tweet.retweetOf,
                 inReplyToTweetId: tweet.inReplyToTweetId,
                 inReplyToUserIds: tweet.inReplyToUserIds

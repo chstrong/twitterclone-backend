@@ -90,6 +90,13 @@ export class DynamoDbTableStack extends NestedStack {
             sortKey: { name: 'tweetId', type: AttributeType.STRING },
         })
 
+        timelineTable.addGlobalSecondaryIndex({
+            indexName: `byDistributedFrom`,
+            partitionKey: { name: 'userId', type: AttributeType.STRING },
+            sortKey: { name: 'distributedFrom', type: AttributeType.STRING },
+            projectionType: ProjectionType.ALL,
+        })
+
         // Define tags to be able to filter for billing
         Tags.of(timelineTable).add('Environment', `${props.config.stage}`);
         Tags.of(timelineTable).add('TableName', timelineTableName);
@@ -141,6 +148,7 @@ export class DynamoDbTableStack extends NestedStack {
             billingMode: BillingMode.PAY_PER_REQUEST,
             partitionKey: { name: 'userId', type: AttributeType.STRING },
             sortKey: { name: 'sk', type: AttributeType.STRING },
+            stream: StreamViewType.NEW_AND_OLD_IMAGES,
         })
 
         relationshipTable.addGlobalSecondaryIndex({
