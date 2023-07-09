@@ -599,11 +599,27 @@ const we_invoke_distributeTweets = async (event: any) => {
   return await handler(event, context)
 }
 
-const we_invoke_distributeTweetsToFollower = async (event:any) => {
+const we_invoke_distributeTweetsToFollower = async (event: any) => {
   const handler = require('../../lib/lambda/appsync/distribute-tweets-to-follower').handler
 
   const context = {}
   return await handler(event, context)
+}
+
+const a_user_calls_unfollow = async (user: any, userId: any) => {
+  const unfollow = `mutation unfollow($userId: ID!) {
+    unfollow(userId: $userId)
+  }`
+  const variables = {
+    userId
+  }
+
+  const data = await GraphQL(process.env.GRAPHQL_API_URL, unfollow, variables, user.accessToken)
+  const result = data.unfollow
+
+  console.log(`[${user.username}] - unfollowed [${userId}]`)
+
+  return result
 }
 
 module.exports = {
@@ -631,6 +647,7 @@ module.exports = {
   a_user_calls_getProfile,
   we_invoke_distributeTweets,
   we_invoke_distributeTweetsToFollower,
+  a_user_calls_unfollow,
 }
 
 export { }

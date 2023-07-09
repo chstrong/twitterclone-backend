@@ -33,6 +33,7 @@ const tmplFiles = [
     "Mutation.like.request",
     "Mutation.unlike.request",
     "Mutation.follow.request",
+    "Mutation.unfollow.request",
     "Reply.inReplyToUsers.request",
     "Reply.inReplyToUsers.response",
 ]

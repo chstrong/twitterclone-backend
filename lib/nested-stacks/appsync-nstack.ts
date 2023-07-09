@@ -116,7 +116,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Query.getProfile.response.vtl')
             ),
-        });        
+        });
 
         // EditMyProfile
         // ---------------------------------------------------------------
@@ -168,7 +168,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Query.getLikes.response.vtl')
             ),
-        });        
+        });
 
         // LikeMutation
         // ---------------------------------------------------------------
@@ -195,9 +195,9 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Mutation.unlike.response.vtl')
             ),
-        });        
+        });
 
-        // Unlike Mutation
+        // Follow Mutation
         RelationshipTableDs.createResolver('FollowMutation', {
             typeName: 'Mutation',
             fieldName: 'follow',
@@ -207,7 +207,21 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Mutation.follow.response.vtl')
             ),
-        });  
+        });
+
+        // Unfollow Mutation
+        RelationshipTableDs.createResolver('UnfollowMutation', {
+            typeName: 'Mutation',
+            fieldName: 'unfollow',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Mutation.unfollow.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/Mutation.unfollow.response.vtl')
+            ),
+        });
+
+        RelationshipTableDs.ds.serviceRoleArn = role.roleArn
 
         // ---------------------------------------------------------------
         // NESTED FIELD RESOLVERS
@@ -250,7 +264,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Tweet.profile.response.vtl')
             ),
-        }); 
+        });
 
         // NestedTimelineProfile
         // ---------------------------------------------------------------
@@ -289,7 +303,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/Tweet.liked.response.vtl')
             ),
-        });        
+        });
 
         // NestedRetweetOf
         // ---------------------------------------------------------------
@@ -343,7 +357,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/MyProfile.tweets.response.vtl')
             ),
-        });     
+        });
 
         // NestedOtherProfileTweets
         // ---------------------------------------------------------------
@@ -383,7 +397,7 @@ export class AppsyncApiStack extends NestedStack {
                 path.join(__dirname, '../graphql/mapping-templates/Tweet.retweeted.response.vtl')
             ),
         });
-        
+
         // NestedOtherProfileFollowing
         // ---------------------------------------------------------------
         RelationshipTableDs.createResolver('NestedOtherProfileFollowing', {
@@ -408,7 +422,7 @@ export class AppsyncApiStack extends NestedStack {
             responseMappingTemplate: MappingTemplate.fromFile(
                 path.join(__dirname, '../graphql/mapping-templates/OtherProfile.followedBy.response.vtl')
             ),
-        });        
+        });
 
         // ---------------------------------------------------------------
         // LAMBDA FUNCTIONS
@@ -469,7 +483,7 @@ export class AppsyncApiStack extends NestedStack {
         props.retweetTable.grantReadWriteData(retweetHandler);
         props.tweetTable.grantReadWriteData(retweetHandler);
         props.timelineTable.grantReadWriteData(retweetHandler);
-        
+
         // RetweetHandler
         // ---------------------------------------------------------------
         const unretweetHandler = new NodejsFunction(this, 'UnretweetHandler', {
@@ -524,7 +538,7 @@ export class AppsyncApiStack extends NestedStack {
             },
         });
 
-        
+
         distributeTweetsHandler.addEventSource(new DynamoEventSource(props.tweetTable, {
             startingPosition: StartingPosition.LATEST,
         }))
