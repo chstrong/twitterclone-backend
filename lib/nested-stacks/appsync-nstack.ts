@@ -558,7 +558,7 @@ export class AppsyncApiStack extends NestedStack {
             handler: "handler",
             environment: {
                 TWEET_TABLE: props.tweetTable.tableName,
-                RELATIONSHIP_TABLE: props.relationshipTable.tableName,
+                TIMELINE_TABLE: props.timelineTable.tableName,
                 MAX_TWEETS: "100",
             },
         });
