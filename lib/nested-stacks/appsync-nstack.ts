@@ -7,6 +7,7 @@ import {
     AuthorizationType,
     FieldLogLevel,
     MappingTemplate,
+    AppsyncFunction,
 } from '@aws-cdk/aws-appsync-alpha'
 import { UserPool } from 'aws-cdk-lib/aws-cognito'
 import { Config } from '../shared/stack-helper';
@@ -87,6 +88,48 @@ export class AppsyncApiStack extends NestedStack {
 
         LikeTableDs.ds.serviceRoleArn = role.roleArn
         RelationshipTableDs.ds.serviceRoleArn = role.roleArn
+
+        // ---------------------------------------------------------------
+        // CREATE PIPELINE RESOLVERS
+        // ---------------------------------------------------------------
+
+        // GetFollowers TODO
+        // ---------------------------------------------------------------
+        const getFollowersF = new AppsyncFunction(this, 'GetFollowersFunction', {
+            name: 'GetFollowersFunction',
+            api,
+            dataSource: RelationshipTableDs,
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/getFollowers.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/getFollowers.response.vtl')
+            ),
+        });
+
+        const hydrateFollowersF = new AppsyncFunction(this, 'HydrateFollowersFunction', {
+            name: 'HydrateFollowersFunction',
+            api,
+            dataSource: UserTableDs,
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/hydrateFollowers.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/hydrateFollowers.response.vtl')
+            ),
+        });
+
+        api.createResolver('GetFollowersPipeline', {
+            typeName: 'Query',
+            fieldName: 'getFollowers',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/simplePipeline.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/simplePipeline.response.vtl')
+            ),
+            pipelineConfig: [getFollowersF, hydrateFollowersF],
+        });
 
         // ---------------------------------------------------------------
         // CREATE DYNAMODB RESOLVERS

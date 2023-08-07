@@ -36,6 +36,8 @@ const tmplFiles = [
     "Mutation.unfollow.request",
     "Reply.inReplyToUsers.request",
     "Reply.inReplyToUsers.response",
+    "hydrateFollowers.request",
+    "hydrateFollowers.response",
 ]
 
 tmplFiles.forEach(function(tmplfile) {
@@ -43,29 +45,3 @@ tmplFiles.forEach(function(tmplfile) {
     const file = path.resolve(__dirname, dirPath + tmplfile + ".vtl")
     VtlReplace(tmpl, file, attributes)
 })
-
-/*
-const unhydratedTweetsPageTweetsRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/UnhydratedTweetsPage.tweets.request_template.vtl')
-const unhydratedTweetsPageTweetsRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/UnhydratedTweetsPage.tweets.request.vtl')
-VtlReplace(unhydratedTweetsPageTweetsRequestTmpl, unhydratedTweetsPageTweetsRequestFile, attributes)
-
-const unhydratedTweetsPageTweetsResponseTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/UnhydratedTweetsPage.tweets.response_template.vtl')
-const unhydratedTweetsPageTweetsResponseFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/UnhydratedTweetsPage.tweets.response.vtl')
-VtlReplace(unhydratedTweetsPageTweetsResponseTmpl, unhydratedTweetsPageTweetsResponseFile, attributes)
-
-const mutationLikeRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.like.request_template.vtl')
-const mutationLikeRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.like.request.vtl')
-VtlReplace(mutationLikeRequestTmpl, mutationLikeRequestFile, attributes)
-
-const mutationUnlikeRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.unlike.request_template.vtl')
-const mutationUnlikeRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Mutation.unlike.request.vtl')
-VtlReplace(mutationUnlikeRequestTmpl, mutationUnlikeRequestFile, attributes)
-
-const replyInReplyToUsersRequestTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.request_template.vtl')
-const replyInReplyToUsersRequestFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.request.vtl')
-VtlReplace(replyInReplyToUsersRequestTmpl, replyInReplyToUsersRequestFile, attributes)
-
-const replyInReplyToUsersResponseTmpl = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.response_template.vtl')
-const replyInReplyToUsersResponseFile = path.resolve(__dirname, '../lib/graphql/mapping-templates/Reply.inReplyToUsers.response.vtl')
-VtlReplace(replyInReplyToUsersResponseTmpl, replyInReplyToUsersResponseFile, attributes)
-*/
