@@ -7,8 +7,8 @@ const retry = require('async-retry')
 jest.setTimeout(30000000)
 
 describe('Given authenticated users, user A and B', () => {
-  let userA:any, userB:any, userAsProfile:any, userBsProfile:any
-  let userBsTweet1:any, userBsTweet2:any
+  let userA: any, userB: any, userAsProfile: any, userBsProfile: any
+  let userBsTweet1: any, userBsTweet2: any
   beforeAll(async () => {
     userA = await given.an_authenticated_user()
     userB = await given.an_authenticated_user()
@@ -37,10 +37,34 @@ describe('Given authenticated users, user A and B', () => {
       expect(followedBy).toBe(true)
     })
 
+    //
+    it("User A should see himself in user B's list of followers", async () => {
+      const { profiles } = await when.a_user_calls_getFollowers(userA, userB.username, 25)
+
+      expect(profiles).toHaveLength(1)
+      expect(profiles[0]).toMatchObject({
+        id: userA.username
+      })
+      expect(profiles[0]).not.toHaveProperty('following')
+      expect(profiles[0]).not.toHaveProperty('followedBy')
+    })
+
+    it("User B should see user A in his list of followers", async () => {
+      const { profiles } = await when.a_user_calls_getFollowers(userB, userB.username, 25)
+
+      expect(profiles).toHaveLength(1)
+      expect(profiles[0]).toMatchObject({
+        id: userA.username,
+        following: false,
+        followedBy: true
+      })
+    })
+    //
+
     it("Adds user B's tweets to user A's timeline", async () => {
       await retry(async () => { // no await
         const { tweets } = await when.a_user_calls_getMyTimeline(userA, 25)
-  
+
         expect(tweets).toHaveLength(2)
         expect(tweets).toEqual([
           expect.objectContaining({
@@ -57,7 +81,7 @@ describe('Given authenticated users, user A and B', () => {
     })
 
     describe("User B sends a tweet", () => {
-      let tweet:any
+      let tweet: any
       const text = chance.string({ length: 16 })
       beforeAll(async () => {
         tweet = await when.a_user_calls_tweet(userB, text)
@@ -66,7 +90,7 @@ describe('Given authenticated users, user A and B', () => {
       it("Should appear in user A's timeline", async () => {
         await retry(async () => {
           const { tweets } = await when.a_user_calls_getMyTimeline(userA, 25)
-  
+
           expect(tweets).toHaveLength(3)
           expect(tweets[0].id).toEqual(tweet.id)
         }, {
@@ -97,7 +121,7 @@ describe('Given authenticated users, user A and B', () => {
     })
 
     describe("User A sends a tweet", () => {
-      let tweet:any
+      let tweet: any
       const text = chance.string({ length: 16 })
       beforeAll(async () => {
         tweet = await when.a_user_calls_tweet(userA, text)
@@ -106,7 +130,7 @@ describe('Given authenticated users, user A and B', () => {
       it("Should appear in user B's timeline", async () => {
         await retry(async () => {
           const { tweets } = await when.a_user_calls_getMyTimeline(userB, 25)
-  
+
           expect(tweets).toHaveLength(4)
           expect(tweets[0].id).toEqual(tweet.id)
         }, {
@@ -162,4 +186,4 @@ describe('Given authenticated users, user A and B', () => {
   })
 })
 
-export {}
+export { }

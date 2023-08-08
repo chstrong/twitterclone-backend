@@ -622,6 +622,28 @@ const a_user_calls_unfollow = async (user: any, userId: any) => {
   return result
 }
 
+const a_user_calls_getFollowers = async (user:any, userId:any, limit:any, nextToken:any) => {
+  const getFollowers = `query getFollowers($userId: ID!, $limit: Int!, $nextToken: String) {
+    getFollowers(userId: $userId, limit: $limit, nextToken: $nextToken) {
+      profiles {
+        ... iProfileFields
+      }
+    }
+  }`
+  const variables = {
+    userId,
+    limit,
+    nextToken
+  }
+
+  const data = await GraphQL(process.env.GRAPHQL_API_URL, getFollowers, variables, user.accessToken)
+  const result = data.getFollowers
+
+  console.log(`[${user.username}] - fetched followers`)
+
+  return result
+}
+
 module.exports = {
   we_invoke_confirmUserSignup,
   a_user_signs_up,
@@ -648,6 +670,7 @@ module.exports = {
   we_invoke_distributeTweets,
   we_invoke_distributeTweetsToFollower,
   a_user_calls_unfollow,
+  a_user_calls_getFollowers,
 }
 
 export { }
