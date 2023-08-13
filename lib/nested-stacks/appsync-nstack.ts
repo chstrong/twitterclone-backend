@@ -93,7 +93,7 @@ export class AppsyncApiStack extends NestedStack {
         // CREATE PIPELINE RESOLVERS
         // ---------------------------------------------------------------
 
-        // GetFollowers TODO
+        // GetFollowers
         // ---------------------------------------------------------------
         const getFollowersF = new AppsyncFunction(this, 'GetFollowersFunction', {
             name: 'GetFollowersFunction',
@@ -129,6 +129,44 @@ export class AppsyncApiStack extends NestedStack {
                 path.join(__dirname, '../graphql/mapping-templates/simplePipeline.response.vtl')
             ),
             pipelineConfig: [getFollowersF, hydrateFollowersF],
+        });
+
+        // GetFollowing
+        // ---------------------------------------------------------------
+        const getFollowingF = new AppsyncFunction(this, 'GetFollowingFunction', {
+            name: 'GetFollowingFunction',
+            api,
+            dataSource: RelationshipTableDs,
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/getFollowing.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/getFollowing.response.vtl')
+            ),
+        });
+
+        const hydrateFollowingF = new AppsyncFunction(this, 'HydrateFollowingFunction', {
+            name: 'HydrateFollowingFunction',
+            api,
+            dataSource: UserTableDs,
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/hydrateFollowing.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/hydrateFollowing.response.vtl')
+            ),
+        });
+
+        api.createResolver('GetFollowingPipeline', {
+            typeName: 'Query',
+            fieldName: 'getFollowing',
+            requestMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/simplePipeline.request.vtl')
+            ),
+            responseMappingTemplate: MappingTemplate.fromFile(
+                path.join(__dirname, '../graphql/mapping-templates/simplePipeline.response.vtl')
+            ),
+            pipelineConfig: [getFollowingF, hydrateFollowingF],
         });
 
         // ---------------------------------------------------------------

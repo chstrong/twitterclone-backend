@@ -622,7 +622,7 @@ const a_user_calls_unfollow = async (user: any, userId: any) => {
   return result
 }
 
-const a_user_calls_getFollowers = async (user:any, userId:any, limit:any, nextToken:any) => {
+const a_user_calls_getFollowers = async (user: any, userId: any, limit: any, nextToken: any) => {
   const getFollowers = `query getFollowers($userId: ID!, $limit: Int!, $nextToken: String) {
     getFollowers(userId: $userId, limit: $limit, nextToken: $nextToken) {
       profiles {
@@ -640,6 +640,28 @@ const a_user_calls_getFollowers = async (user:any, userId:any, limit:any, nextTo
   const result = data.getFollowers
 
   console.log(`[${user.username}] - fetched followers`)
+
+  return result
+}
+
+const a_user_calls_getFollowing = async (user:any, userId:any, limit:any, nextToken:any) => {
+  const getFollowing = `query getFollowing($userId: ID!, $limit: Int!, $nextToken: String) {
+    getFollowing(userId: $userId, limit: $limit, nextToken: $nextToken) {
+      profiles {
+        ... iProfileFields
+      }
+    }
+  }`
+  const variables = {
+    userId,
+    limit,
+    nextToken
+  }
+
+  const data = await GraphQL(process.env.GRAPHQL_API_URL, getFollowing, variables, user.accessToken)
+  const result = data.getFollowing
+
+  console.log(`[${user.username}] - fetched following`)
 
   return result
 }
@@ -671,6 +693,7 @@ module.exports = {
   we_invoke_distributeTweetsToFollower,
   a_user_calls_unfollow,
   a_user_calls_getFollowers,
+  a_user_calls_getFollowing,
 }
 
 export { }

@@ -38,6 +38,8 @@ const tmplFiles = [
     "Reply.inReplyToUsers.response",
     "hydrateFollowers.request",
     "hydrateFollowers.response",
+    "hydrateFollowing.request",
+    "hydrateFollowing.response",
 ]
 
 tmplFiles.forEach(function(tmplfile) {
