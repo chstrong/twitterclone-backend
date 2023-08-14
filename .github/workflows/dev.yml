@@ -24,8 +24,13 @@ jobs:
       with:
         node-version: '12'
 
+    - name: Install Curl
+      run: sudo apt-get install curl
+
     - name: Install NPM
-      run: sudo apt update -y && sudo apt install nodejs npm -y
+      run: |
+        curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        sudo apt-get install -y nodejs  
 
     - name: Install Alpha CDK packages
       run: | 
