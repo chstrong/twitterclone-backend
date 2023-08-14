@@ -29,13 +29,17 @@ jobs:
 
     - name: Install NPM
       run: |
-        curl -sL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+        curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
         sudo apt-get install -y nodejs  
 
     - name: Install Alpha CDK packages
       run: | 
+        npm i aws-cdk-lib@^2.57.0
         npm i @aws-cdk/aws-appsync-alpha
         npm i @aws-cdk/aws-cognito-identitypool-alpha
+
+    - name: NPM Install
+      run: npm install
 
     - name: npm ci
       run: npm ci
