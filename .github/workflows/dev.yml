@@ -25,7 +25,7 @@ jobs:
         node-version: '12'
 
     - name: Install NPM
-      run: sudo apt update -y && sudo apt install nodeis pm -y
+      run: sudo apt update -y && sudo apt install nodejs npm -y
 
     - name: npm ci
       run: npm ci
