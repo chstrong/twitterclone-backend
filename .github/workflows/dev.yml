@@ -30,7 +30,8 @@ jobs:
     - name: Install NPM
       run: |
         curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        sudo apt-get install -y nodejs  
+        sudo apt-get install -y nodejs npm 
+        npm -v
 
     - name: Install Alpha CDK packages
       run: | 
