@@ -16,22 +16,22 @@ jobs:
 
     steps:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
-        python-version: '3.x'
-    - uses: actions/setup-node@v1
+        python-version: '3.10'
+    - uses: actions/setup-node@v3
       with:
-        node-version: '12'
+        node-version: '18'
 
-    - name: Install Curl
-      run: sudo apt-get install curl
+#    - name: Install Curl
+#      run: sudo apt-get install curl
 
-    - name: Install NPM
-      run: |
-        curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        sudo apt-get install -y nodejs npm 
-        npm -v
+#    - name: Install NPM
+#      run: |
+#        curl -sL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+#        sudo apt-get install -y nodejs npm 
+#        npm -v
 
     - name: Install Alpha CDK packages
       run: | 
